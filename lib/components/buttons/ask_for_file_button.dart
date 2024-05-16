@@ -14,6 +14,7 @@ class AskForFile extends StatefulWidget {
 
 class _AskForFileState extends State<AskForFile> {
   bool fileSubmitted = false;
+  List<File> files = [];
   @override
   Widget build(BuildContext context) {
     return AsyncButtonBuilder(
