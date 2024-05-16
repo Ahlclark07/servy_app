@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "528883604006",
+    "project_id": "servy-39f61",
+    "storage_bucket": "servy-39f61.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528883604006:android:867a22f0bbc08c776ca4e7",
+        "android_client_info": {
+          "package_name": "com.example.servy_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7efYGfp5SMfS0BDpDpi2GU94S9j8mf90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
