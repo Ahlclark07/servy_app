@@ -98,6 +98,56 @@ class ServyBackend {
     }
   }
 
+  Future<List<String>> createMateriel(
+      {required File photo,
+      required String nom,
+      required String prix,
+      required String minidesc}) async {
+    try {
+      final formData = FormData();
+      formData.addFile("image", photo.path);
+      formData.add("nom", nom);
+      formData.add("prix", prix);
+      formData.add("miniDescription", minidesc);
+      final response = await uno.post("/users/materiel", data: formData);
+      return [ServyBackend.success, response.data["materiel"]["_id"]];
+    } on UnoError catch (error) {
+      return ["${ServyBackend.echec} : ${error.message}", ""];
+    }
+  }
+
+  Future<List<String>> createServicePrestataire(
+      {required List<File> photos,
+      required File audio,
+      required String service,
+      required String delai,
+      required List<String> materiels,
+      required String tarif,
+      required String desc}) async {
+    try {
+      final formData = FormData();
+
+      for (File photo in photos) {
+        formData.addFile("images", photo.path);
+      }
+      for (String materiel in materiels) {
+        formData.add("materiels", materiel);
+      }
+      formData.addFile("audio", audio.path);
+      formData.add("delai", delai);
+      formData.add("service", service);
+      formData.add("tarif", tarif);
+      formData.add("desc", desc);
+
+      inspect(formData);
+      final response =
+          await uno.post("/users/createserviceprestataire", data: formData);
+      return [ServyBackend.success, response.data["service"]["_id"]];
+    } on UnoError catch (error) {
+      return ["${ServyBackend.echec} : ${error.message}", ""];
+    }
+  }
+
   Future<Map<String, dynamic>> getConnectedUser() async {
     if (user.isNotEmpty) return user;
 
@@ -115,7 +165,7 @@ class ServyBackend {
       final response = await uno.get("/users/servicesList");
 
       return List<Map<dynamic, dynamic>>.from(response.data);
-    } on UnoError catch (error) {
+    } catch (error) {
       inspect(error);
       return [];
     }

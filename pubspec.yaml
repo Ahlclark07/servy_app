@@ -49,6 +49,8 @@ dependencies:
   async_button_builder: ^3.0.0+1
   file_picker: ^8.0.3
   fan_floating_menu: ^0.0.1
+  flutter_sound: ^9.4.11
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:

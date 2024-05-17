@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: AppText.titre,
       theme: Design.themeData,
-      initialRoute: "/remplirProfil",
+      initialRoute: "/creerService",
       // AuthService().currentUser != null ? "/main" : "/inscription",
       routes: {
         "/intro": (context) => const PageIntro(),
@@ -38,9 +38,9 @@ class MyApp extends StatelessWidget {
         "/connexion": (context) => PageConnexion(),
         "/mdp_oublié": (context) => Container(),
         "/page_recherche": (context) => Container(),
-        "/main": (context) => MainPage(),
-        "/devenirVendeur": (context) => PageDevenirVendeur(),
-        "/creerService": (context) => PageCreationService(),
+        "/main": (context) => const MainPage(),
+        "/devenirVendeur": (context) => const PageDevenirVendeur(),
+        "/creerService": (context) => const PageCreationService(),
       },
     );
   }

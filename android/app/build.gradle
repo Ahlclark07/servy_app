@@ -29,7 +29,6 @@ android {
     namespace "com.example.servy_app"
     compileSdk 34
     ndkVersion flutter.ndkVersion
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

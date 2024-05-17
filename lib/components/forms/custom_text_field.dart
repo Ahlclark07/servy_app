@@ -9,12 +9,14 @@ class CustomTextField extends StatefulWidget {
   final IconData icon;
   final TextEditingController controller;
   final bool isNumber;
+  final int maxLines;
   const CustomTextField(
       {super.key,
       required this.labelTitle,
       required this.labelText,
       required this.controller,
       required this.name,
+      this.maxLines = 1,
       this.isNumber = false,
       required this.icon});
 
@@ -43,6 +45,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               borderRadius: BorderRadius.circular(12),
               color: Palette.cendre.withOpacity(.15)),
           child: FormBuilderTextField(
+              maxLines: widget.maxLines,
               onTap: () => setState(() {
                     showLabel = false;
                   }),
@@ -56,10 +59,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   widget.isNumber ? TextInputType.phone : TextInputType.text,
               name: widget.name,
               decoration: Design.inputDecoration.copyWith(
-                  icon: Container(
-                      margin: const EdgeInsets.only(left: 12, right: 0),
-                      child: Icon(widget.icon)),
-                  label: showLabel
+                  icon: widget.maxLines == 1
+                      ? Container(
+                          margin: const EdgeInsets.only(left: 12, right: 0),
+                          child: Icon(widget.icon))
+                      : null,
+                  label: (showLabel && widget.maxLines == 1)
                       ? Text(
                           widget.labelText,
                           style: Theme.of(context).textTheme.labelMedium,

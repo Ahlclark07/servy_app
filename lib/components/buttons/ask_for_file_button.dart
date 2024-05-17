@@ -2,11 +2,19 @@ import 'dart:io';
 import 'package:async_button_builder/async_button_builder.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:servy_app/design/design_data.dart';
 
 class AskForFile extends StatefulWidget {
   final Function(File) callback;
   final String nom;
-  const AskForFile({super.key, required this.callback, required this.nom});
+  final int limit;
+  final double hauteur;
+  const AskForFile(
+      {super.key,
+      required this.callback,
+      required this.nom,
+      this.limit = 1,
+      this.hauteur = 150});
 
   @override
   State<AskForFile> createState() => _AskForFileState();
@@ -18,7 +26,7 @@ class _AskForFileState extends State<AskForFile> {
   @override
   Widget build(BuildContext context) {
     return AsyncButtonBuilder(
-        child: Text("Uploadez le fichier : ${widget.nom}"),
+        child: const Icon(Icons.add),
         onPressed: () async {
           FilePickerResult? result = await FilePicker.platform.pickFiles();
 
@@ -28,16 +36,56 @@ class _AskForFileState extends State<AskForFile> {
             widget.callback(file);
             setState(() {
               fileSubmitted = true;
+              files.add(file);
             });
           }
         },
         builder: (context, child, callback, state) {
-          if (fileSubmitted) {
-            return ElevatedButton(
-                onPressed: null, child: Text("Upload de ${widget.nom} reussi"));
-          }
+          // if (fileSubmitted) {
+          //   return ElevatedButton(
+          //       onPressed: null, child: Text("Upload de ${widget.nom} reussi"));
+          // }
 
-          return ElevatedButton(onPressed: callback, child: child);
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Charger ${widget.limit > 1 ? 'les fichiers' : 'le fichier'} : ${widget.nom}",
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    ?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              Container(
+                width: 400,
+                height: widget.hauteur,
+                color: Palette.cendre.withAlpha(50),
+                padding: const EdgeInsets.all(10),
+                child: Wrap(
+                  direction: Axis.horizontal,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 7,
+                  children: [
+                    ...List<Container>.generate(
+                        files.length,
+                        (index) => Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: FileImage(files[index])),
+                              ),
+                            )),
+                    widget.limit != files.length
+                        ? ElevatedButton(onPressed: callback, child: child)
+                        : const IconButton(
+                            onPressed: null, icon: Icon(Icons.check)),
+                  ],
+                ),
+              ),
+            ],
+          );
         });
   }
 }
