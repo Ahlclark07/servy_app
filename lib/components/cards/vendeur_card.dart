@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:servy_app/design/design_data.dart';
+import 'package:servy_app/utils/servy_backend.dart';
 
 class VendeurCard extends StatelessWidget {
   final String nom;
@@ -10,9 +11,9 @@ class VendeurCard extends StatelessWidget {
 
   const VendeurCard(
       {super.key,
-      required String this.nom,
-      required String this.img,
-      required String this.profession});
+      required this.nom,
+      required this.img,
+      required this.profession});
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +39,10 @@ class VendeurCard extends StatelessWidget {
             width: 130,
             height: 130,
             decoration: BoxDecoration(
-              image:
-                  DecorationImage(image: NetworkImage(img), fit: BoxFit.cover),
+              image: DecorationImage(
+                  image:
+                      NetworkImage("${ServyBackend.basePhotodeProfilURL}/$img"),
+                  fit: BoxFit.cover),
               borderRadius: BorderRadius.circular(15),
             ),
           ),

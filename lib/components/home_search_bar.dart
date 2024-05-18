@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:servy_app/design/design_data.dart';
 
 class HomeSearchBar extends StatelessWidget {
-  const HomeSearchBar({
-    super.key,
-  });
+  final Function() callback;
+  const HomeSearchBar({super.key, required this.callback});
 
   @override
   Widget build(BuildContext context) {
     return SearchBar(
+        onTap: () => callback(),
         hintText: "Rechercher un service ou un vendeur",
         elevation: const MaterialStatePropertyAll<double>(1),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(

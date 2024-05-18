@@ -16,7 +16,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   ServyBackend.initialize();
-  await Future.delayed(const Duration(milliseconds: 450));
+  await Future.delayed(const Duration(milliseconds: 1000));
   runApp(const MyApp());
 }
 
@@ -29,8 +29,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: AppText.titre,
       theme: Design.themeData,
-      initialRoute: "/creerService",
-      // AuthService().currentUser != null ? "/main" : "/inscription",
+      initialRoute:
+          //  "/creerService",
+          AuthService().currentUser != null ? "/main" : "/intro",
       routes: {
         "/intro": (context) => const PageIntro(),
         "/inscription": (context) => PageInscription(),

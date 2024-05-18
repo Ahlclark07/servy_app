@@ -8,7 +8,6 @@ import 'package:servy_app/components/buttons/ask_for_file_button.dart';
 import 'package:servy_app/components/forms/customSelectField.dart';
 import 'package:servy_app/components/forms/custom_text_field.dart';
 import 'package:servy_app/components/forms/materiau_form.dart';
-import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 
@@ -36,6 +35,13 @@ class _PageCreationServiceState extends State<PageCreationService> {
     initRecorder();
   }
 
+  @override
+  void dispose() {
+    // Annuler l'abonnement au flux lorsque le widget est retiré de l'arbre
+    recorder.closeRecorder();
+    super.dispose();
+  }
+
   Future<void> record() async {
     await recorder.startRecorder(toFile: "audio.mp4");
   }
@@ -58,6 +64,10 @@ class _PageCreationServiceState extends State<PageCreationService> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.arrow_back)),
+        title: Text("Creation de service"),
         scrolledUnderElevation: 0,
       ),
       body: SingleChildScrollView(
@@ -72,7 +82,7 @@ class _PageCreationServiceState extends State<PageCreationService> {
                   builder: (context, services) {
                     List<String> titres = [];
                     List<String> values = [];
-                    print("En voila des manières");
+
                     services?.forEach((element) {
                       titres.add(element["nom"]);
                       values.add(element["_id"]);
@@ -211,6 +221,9 @@ class _PageCreationServiceState extends State<PageCreationService> {
                   ],
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
               ElevatedButton(
                 onPressed: () async {
                   final response = await ServyBackend()
@@ -222,7 +235,15 @@ class _PageCreationServiceState extends State<PageCreationService> {
                           audio: audio,
                           desc: descController.text,
                           materiels: materiels);
+
                   inspect(response);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("${response[0]} ${response[1]}"),
+                    ),
+                  );
+                  Navigator.of(context).pop();
                 },
                 child: const Text(
                   "Confirmer la création",

@@ -1,12 +1,16 @@
+import 'dart:developer';
+
 import 'package:async_builder/async_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:servy_app/components/cards/service_card.dart';
 import 'package:servy_app/components/cards/vendeur_card.dart';
 import 'package:servy_app/components/home_search_bar.dart';
+import 'package:servy_app/utils/servy_backend.dart';
 
 class AccueilInnerPage extends StatefulWidget {
-  const AccueilInnerPage({super.key});
+  final Function() callback;
+  const AccueilInnerPage({super.key, required this.callback});
 
   @override
   State<AccueilInnerPage> createState() => _AccueilInnerPageState();
@@ -35,7 +39,9 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
           const SizedBox(
             height: 20,
           ),
-          const HomeSearchBar(),
+          HomeSearchBar(
+            callback: () => widget.callback(),
+          ),
           const SizedBox(
             height: 20,
           ),
@@ -50,24 +56,27 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
           const SizedBox(
             height: 20,
           ),
-          AsyncBuilder(builder: (context, users) {
-            return FlutterCarousel(
-                items: const [
-                  VendeurCard(
-                    nom: "Ruben",
-                    profession: "Ahoco man",
-                    img:
-                        "https://thumbor.comeup.com/unsafe/100x100/filters:quality(90):no_upscale()/user/a7f5d2e1-58f0-4fbf-8e1e-521b4ff86515.jpg",
-                  ),
-                ],
-                options: CarouselOptions(
-                  initialPage: 3,
-                  viewportFraction: 1 / 2,
-                  showIndicator: false,
-                  enableInfiniteScroll: true,
-                  height: 175,
-                ));
-          }),
+          AsyncBuilder(
+              waiting: (context) => const CircularProgressIndicator(),
+              future: ServyBackend().getListOfVendeurs(),
+              builder: (context, users) {
+                return users!.isNotEmpty
+                    ? FlutterCarousel(
+                        items: List<VendeurCard>.generate(
+                            users.length,
+                            (index) => VendeurCard(
+                                nom: users[index]["nom"],
+                                img: users[index]["photoDeProfil"],
+                                profession: users[index]["profession"])),
+                        options: CarouselOptions(
+                          initialPage: 3,
+                          viewportFraction: 1 / 2,
+                          showIndicator: false,
+                          enableInfiniteScroll: true,
+                          height: 175,
+                        ))
+                    : const Text("Pas de vendeurs pour le moment sorry bro");
+              }),
           const SizedBox(
             height: 20,
           ),
@@ -82,24 +91,28 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
           const SizedBox(
             height: 20,
           ),
-          FlutterCarousel(
-              items: [
-                ServiceCard(
-                  onChange: () => setState(() {
-                    shouldUpHeight = !shouldUpHeight;
-                  }),
-                  nom: "Ruben",
-                  profession: "Ahoco man",
-                  img:
-                      "https://thumbor.comeup.com/unsafe/100x100/filters:quality(90):no_upscale()/user/a7f5d2e1-58f0-4fbf-8e1e-521b4ff86515.jpg",
-                ),
-              ],
-              options: CarouselOptions(
-                viewportFraction: .94,
-                showIndicator: false,
-                height: shouldUpHeight ? 320 : 280,
-                enableInfiniteScroll: true,
-              )),
+          AsyncBuilder(
+              waiting: (context) => const CircularProgressIndicator(),
+              future: ServyBackend().getListOfServicesPrestataires(),
+              builder: (context, services) {
+                return services!.isEmpty
+                    ? const Text("Pas de services pour le moment")
+                    : FlutterCarousel(
+                        items: [
+                            ...List<ServiceCard>.generate(
+                                services.length,
+                                ((index) => ServiceCard(
+                                    vendeur: services[index]["vendeur"],
+                                    service: services[index],
+                                    onChange: () => null))),
+                          ],
+                        options: CarouselOptions(
+                          viewportFraction: .94,
+                          showIndicator: false,
+                          height: shouldUpHeight ? 320 : 280,
+                          enableInfiniteScroll: true,
+                        ));
+              }),
           const SizedBox(
             height: 20,
           )

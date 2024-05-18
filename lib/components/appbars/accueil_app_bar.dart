@@ -1,11 +1,14 @@
 import 'package:async_builder/async_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:servy_app/components/search_bar.dart';
 import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
 class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final bool showSearch;
   final Function callBack;
-  const AccueilAppBar({super.key, required this.callBack});
+  const AccueilAppBar(
+      {super.key, required this.callBack, this.showSearch = false});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +19,7 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
           waiting: (context) => const CircularProgressIndicator(),
           builder: (context, user) {
             return AppBar(
+              bottom: showSearch ? const HomeSearchBar() : null,
               scrolledUnderElevation: 0,
               leadingWidth: double.infinity,
               leading: Column(
@@ -49,7 +53,7 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: NetworkImage(
-                                "${ServyBackend.basePhotoURL}/uploads/images/photodeprofils/${user?["photoDeProfil"]}")),
+                                "${ServyBackend.basePhotodeProfilURL}/${user?["photoDeProfil"]}")),
                         borderRadius: BorderRadius.circular(12)),
                   ),
                 )
@@ -60,5 +64,5 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(105);
+  Size get preferredSize => Size.fromHeight(showSearch ? 140 : 105);
 }

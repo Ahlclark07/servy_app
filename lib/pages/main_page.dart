@@ -1,4 +1,3 @@
-import 'package:fan_floating_menu/fan_floating_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/pages/innerpages/accueil_inner_page.dart';
@@ -15,7 +14,6 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int pageActuelle = 0;
   final pages = [
-    const AccueilInnerPage(),
     Container(),
     Container(),
     const ProfilInnerPage(),
@@ -24,38 +22,31 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: pageActuelle == 3
-          ? Transform.translate(
-              offset: Offset(20, 70),
-              child: Transform.scale(
-                scale: .8,
-                child: FanFloatingMenu(
-                    toggleButtonColor: Palette.blue,
-                    fanMenuDirection: FanMenuDirection.rtl,
-                    menuItems: [
-                      FanMenuItem(
-                          menuItemIconColor: Palette.blue,
-                          onTap: () => null,
-                          icon: Icons.pin_drop,
-                          title: "Ajouter une adresse"),
-                      FanMenuItem(
-                          menuItemIconColor: Palette.blue,
-                          onTap: () => null,
-                          icon: Icons.work,
-                          title: "Ajouter un service"),
-                    ]),
-              ),
+          ? FloatingActionButton(
+              onPressed: () => Navigator.of(context).pushNamed("/creerService"),
+              child: const Icon(Icons.add),
             )
           : null,
       appBar: pageActuelle != 3
           ? AccueilAppBar(
+              showSearch: pageActuelle == 1,
               callBack: () => setState(() {
-                    pageActuelle = 3;
+                    pageActuelle = 2;
                   }))
           : AppBar(
+              scrolledUnderElevation: 0,
               title: const Text("Votre profil"),
             ),
-      body: SingleChildScrollView(
-          child: Builder(builder: (context) => pages[pageActuelle])),
+      body: SingleChildScrollView(child: Builder(builder: (context) {
+        if (pageActuelle == 0) {
+          return AccueilInnerPage(
+            callback: () => setState(() {
+              pageActuelle = 1;
+            }),
+          );
+        }
+        return pages[pageActuelle - 1];
+      })),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: pageActuelle,
         onTap: (value) => setState(() {

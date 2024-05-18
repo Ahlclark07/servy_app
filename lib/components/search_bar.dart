@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:servy_app/design/design_data.dart';
 
-class HomeSearchBar extends StatelessWidget {
-  const HomeSearchBar({
-    super.key,
-  });
+class HomeSearchBar extends StatelessWidget implements PreferredSizeWidget {
+  const HomeSearchBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SearchBar(
+        autoFocus: true,
         hintText: "Rechercher un service ou un vendeur",
         elevation: const MaterialStatePropertyAll<double>(1),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -41,4 +40,7 @@ class HomeSearchBar extends StatelessWidget {
           },
         ));
   }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(50);
 }

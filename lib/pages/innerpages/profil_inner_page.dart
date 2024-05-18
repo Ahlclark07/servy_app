@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:async_builder/async_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:servy_app/components/cards/service_card.dart';
 import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
@@ -17,6 +20,9 @@ class ProfilInnerPage extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   children: [
                     Container(
@@ -25,7 +31,7 @@ class ProfilInnerPage extends StatelessWidget {
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image: NetworkImage(
-                                  "${ServyBackend.basePhotoURL}/uploads/images/photodeprofils/${user?["photoDeProfil"]}")),
+                                  "${ServyBackend.basePhotodeProfilURL}/${user?["photoDeProfil"]}")),
                           borderRadius: BorderRadius.circular(50)),
                     ),
                     const SizedBox(
@@ -36,7 +42,7 @@ class ProfilInnerPage extends StatelessWidget {
                       verticalDirection: VerticalDirection.down,
                       children: [
                         Text(
-                          user?["nom_complet"],
+                          "${user?["nom_complet"]}, ${user?["profession"]}",
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
@@ -86,11 +92,43 @@ class ProfilInnerPage extends StatelessWidget {
                     ? ElevatedButton(
                         onPressed: () =>
                             Navigator.pushNamed(context, "/devenirVendeur"),
-                        child: Text("Devenir vendeur"))
+                        child: const Text("Devenir vendeur"))
                     : Container(),
                 const SizedBox(
                   height: 20,
                 ),
+                Container(),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text("Liste des services créés",
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayMedium
+                        ?.copyWith(fontSize: 20)),
+                const SizedBox(
+                  height: 20,
+                ),
+                AsyncBuilder(
+                    future: ServyBackend().getUserServices(user["_id"]),
+                    waiting: (context) => const CircularProgressIndicator(),
+                    builder: (context, list) {
+                      inspect(list);
+                      if (list!.isEmpty) {
+                        return const Center(
+                            child: Text("Aucun service pour le moment"));
+                      }
+                      return Column(
+                        children: [
+                          ...List<ServiceCard>.generate(
+                              list.length,
+                              (index) => ServiceCard(
+                                  vendeur: user,
+                                  service: list[index],
+                                  onChange: () => null))
+                        ],
+                      );
+                    }),
                 Text("Liste des commandes payées",
                     style: Theme.of(context)
                         .textTheme

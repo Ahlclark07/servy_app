@@ -9,10 +9,20 @@ import 'package:uno/uno.dart';
 class ServyBackend {
   static late final ServyBackend _instance;
   static String baseURL = "http://localhost:300";
-  static String basePhotoURL = "http://192.168.1.105:300";
+  static String basePhotodeProfilURL =
+      "http://192.168.1.105:300/uploads/images/photodeprofils";
+  static String basePhotodeServicesPrestataires =
+      "http://192.168.1.105:300/uploads/images/servicesprestataires";
+  static String basePhotodeMateriau =
+      "http://192.168.1.105:300/uploads/images/materiaux";
+  static String baseAudio =
+      "http://192.168.1.105:300/uploads/audios/servicesprestataires";
   static const String echec = "echec";
   static const String success = "success";
   Map<String, dynamic> user = Map();
+  Uno uno = Uno(
+    baseURL: "http://10.0.2.2:300",
+  );
   ServyBackend._internal() {
     _initBackend();
   }
@@ -20,6 +30,11 @@ class ServyBackend {
   factory ServyBackend() {
     return _instance;
   }
+
+  static void initialize() {
+    _instance = ServyBackend._internal();
+  }
+
   Future<void> _initBackend() async {
     try {
       final token = await AuthService().currentUser?.getIdToken();
@@ -38,10 +53,19 @@ class ServyBackend {
     }
   }
 
-  late final Uno uno;
-
   Future<String> userExist() async {
     try {
+      if (uno.headers.isEmpty) {
+        final token = await AuthService().currentUser?.getIdToken();
+        if (token != null) {
+          _instance.uno = Uno(
+            baseURL: "http://10.0.2.2:300",
+            headers: {"Authorization": "Bearer $token"},
+          );
+        }
+      }
+      final response = await uno.get("/users/getUser");
+      user = response.data["user"];
       return ServyBackend.success;
     } on UnoError catch (error) {
       return "${error.response?.status} ${error.message}";
@@ -131,13 +155,13 @@ class ServyBackend {
         formData.addFile("images", photo.path);
       }
       for (String materiel in materiels) {
-        formData.add("materiels", materiel);
+        formData.add("materiaux", materiel);
       }
       formData.addFile("audio", audio.path);
       formData.add("delai", delai);
       formData.add("service", service);
       formData.add("tarif", tarif);
-      formData.add("desc", desc);
+      formData.add("description", desc);
 
       inspect(formData);
       final response =
@@ -154,24 +178,78 @@ class ServyBackend {
     try {
       final response = await uno.get("/users/getUser");
       user = response.data["user"];
+    } on UnoError catch (error) {
+      if (error.response?.status == 401) {
+        final token = await AuthService().currentUser?.getIdToken();
+        if (token != null) {
+          uno = Uno(
+            baseURL: "http://10.0.2.2:300",
+            headers: {"Authorization": "Bearer $token"},
+          );
+          final response = await uno.get("/users/getUser");
+          user = response.data["user"];
+        }
+      }
     } catch (error) {
       inspect(error);
     }
     return user;
   }
 
-  Future<List<Map<dynamic, dynamic>>> getListOfServices() async {
+  Future<List<Map<dynamic, dynamic>>> getUserServices(String id) async {
     try {
-      final response = await uno.get("/users/servicesList");
-
-      return List<Map<dynamic, dynamic>>.from(response.data);
+      final response = await uno.get("/users/getservicesofaprestataire/$id");
+      return List<Map<dynamic, dynamic>>.from(response.data["services"]);
     } catch (error) {
       inspect(error);
       return [];
     }
   }
 
-  static void initialize() {
-    _instance = ServyBackend._internal();
+  Future<List<Map<dynamic, dynamic>>> getListOfServices() async {
+    try {
+      final response = await uno.get("/users/servicesList");
+
+      inspect(response.data["services"]);
+      return List<Map<dynamic, dynamic>>.from(response.data["services"]);
+    } on UnoError catch (error) {
+      if (error.response?.status == 401) {
+        final token = await AuthService().currentUser?.getIdToken();
+        if (token != null) {
+          uno = Uno(
+            baseURL: "http://10.0.2.2:300",
+            headers: {"Authorization": "Bearer $token"},
+          );
+          final response = await uno.get("/users/servicesList");
+
+          return List<Map<dynamic, dynamic>>.from(response.data["services"]);
+        }
+      }
+      inspect(error);
+      return [];
+    }
+  }
+
+  Future<List<Map<dynamic, dynamic>>> getListOfVendeurs() async {
+    try {
+      final response = await uno.get("/users/vendeursList");
+
+      return List<Map<dynamic, dynamic>>.from(response.data["vendeurs"]);
+    } on UnoError catch (error) {
+      inspect(error);
+      return [];
+    }
+  }
+
+  Future<List<Map<dynamic, dynamic>>> getListOfServicesPrestataires() async {
+    try {
+      final response = await uno.get("/users/servicesPrestatairesList");
+
+      inspect(response.data["services"]);
+      return List<Map<dynamic, dynamic>>.from(response.data["services"]);
+    } on UnoError catch (error) {
+      inspect(error);
+      return [];
+    }
   }
 }

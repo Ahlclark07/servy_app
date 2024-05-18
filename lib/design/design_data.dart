@@ -16,6 +16,9 @@ class Design {
       iconColor: Palette.blue,
       contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 0));
   static ThemeData themeData = ThemeData(
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: Palette.blue,
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
               overlayColor: MaterialStateProperty.resolveWith<Color>(
