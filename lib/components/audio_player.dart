@@ -1,5 +1,4 @@
 import 'package:async_builder/async_builder.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 
@@ -93,7 +92,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
             initial: null,
             stream: player.onProgress,
             builder: (context, value) {
-              return Container(
+              return SizedBox(
                 width: 250,
                 child: ProgressBar(
                   progress: value != null

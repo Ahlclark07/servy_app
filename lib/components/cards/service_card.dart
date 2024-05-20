@@ -103,7 +103,7 @@ class _ServiceCardState extends State<ServiceCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       width: 200,
                       child: Flex(
                         direction: Axis.horizontal,
@@ -152,10 +152,12 @@ class _ServiceCardState extends State<ServiceCard> {
               child: AnimatedScale(
                   scale: isAudioActive ? 1 : 0,
                   alignment: Alignment.bottomRight,
-                  duration: Duration(milliseconds: 100),
-                  child: AudioPlayer(
-                    audio: widget.service["vocal"] ?? "",
-                  )),
+                  duration: const Duration(milliseconds: 100),
+                  child: isAudioActive
+                      ? AudioPlayer(
+                          audio: widget.service["vocal"] ?? "",
+                        )
+                      : null),
             ),
           ],
         ),

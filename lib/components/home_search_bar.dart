@@ -33,7 +33,7 @@ class HomeSearchBar extends StatelessWidget {
           ),
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text(
                     "En cours d'implémentation ! Vous pourrez plus tard faire des recherches en fon"),
               ),

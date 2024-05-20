@@ -1,11 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:servy_app/components/audio_player.dart';
 import 'package:servy_app/design/design_data.dart';
+import 'package:servy_app/pages/page_profil.dart';
 import 'package:servy_app/utils/servy_backend.dart';
+
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class PageService extends StatelessWidget {
   final Map service;
@@ -16,7 +19,6 @@ class PageService extends StatelessWidget {
   Widget build(BuildContext context) {
     final images = service["images"];
     final width = MediaQuery.of(context).size.width;
-    inspect(service);
     return Scaffold(
       bottomNavigationBar: Container(
         color: Palette.blue,
@@ -30,12 +32,29 @@ class PageService extends StatelessWidget {
                   color: Palette.background, fontWeight: FontWeight.w700),
             ),
             ElevatedButton(
-              onPressed: null,
-              child: Text("Commander"),
+              onPressed: () async {
+                final response = await ServyBackend()
+                    .passerCommande(serviceprestataire: service["_id"]);
+                if (response[0] == ServyBackend.success) {
+                  final room = await FirebaseChatCore.instance.createRoom(
+                      types.User(id: vendeur["idFirebase"]),
+                      metadata: {
+                        "name": response[1],
+                        "imageUrl": vendeur["photoDeProfil"]
+                      });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Bien ca a marché hein"),
+                    ),
+                  );
+                }
+              },
               style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
                   foregroundColor: MaterialStatePropertyAll(Palette.blue),
                   backgroundColor:
                       MaterialStatePropertyAll<Color>(Palette.background)),
+              child: const Text("Commander"),
             )
           ],
         ),
@@ -51,7 +70,7 @@ class PageService extends StatelessWidget {
         child: Column(children: [
           Container(
             child: Column(children: [
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: 300,
                 child: Stack(
@@ -69,10 +88,18 @@ class PageService extends StatelessWidget {
                     Positioned(
                       bottom: 0,
                       left: 10,
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "${ServyBackend.basePhotodeProfilURL}/${vendeur["photoDeProfil"]}"),
-                        radius: 60,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PageProfil(
+                                      vendeur: vendeur,
+                                    ))),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              "${ServyBackend.basePhotodeProfilURL}/${vendeur["photoDeProfil"]}"),
+                          radius: 60,
+                        ),
                       ),
                     )
                   ],
@@ -98,7 +125,7 @@ class PageService extends StatelessWidget {
             audio: service["vocal"] ?? "",
           ),
           const Text("Description du service"),
-          Container(
+          SizedBox(
             width: width - 40,
             child: Flex(
               direction: Axis.horizontal,
@@ -117,7 +144,7 @@ class PageService extends StatelessWidget {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             width: width - 40,
             child: Flex(
               direction: Axis.horizontal,

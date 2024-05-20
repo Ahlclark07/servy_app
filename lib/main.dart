@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/pages/devenir_vendeur.dart';
 import 'package:servy_app/pages/main_page.dart';
@@ -16,7 +18,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   ServyBackend.initialize();
-  await Future.delayed(const Duration(milliseconds: 1000));
   runApp(const MyApp());
 }
 
@@ -27,6 +28,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      supportedLocales: const [Locale('fr')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        FormBuilderLocalizations.delegate
+      ],
       title: AppText.titre,
       theme: Design.themeData,
       initialRoute:
@@ -35,7 +43,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/intro": (context) => const PageIntro(),
         "/inscription": (context) => PageInscription(),
-        "/remplirProfil": (context) => PageRemplirProfil(),
+        "/remplirProfil": (context) => const PageRemplirProfil(),
         "/connexion": (context) => PageConnexion(),
         "/mdp_oublié": (context) => Container(),
         "/page_recherche": (context) => Container(),

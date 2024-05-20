@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:servy_app/static_test/fr.dart';
+import 'package:servy_app/utils/servy_backend.dart';
 
 class AuthService {
   User? get currentUser => FirebaseAuth.instance.currentUser;
@@ -13,6 +14,7 @@ class AuthService {
         email: email,
         password: password,
       );
+      await ServyBackend().setUnoHeader();
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

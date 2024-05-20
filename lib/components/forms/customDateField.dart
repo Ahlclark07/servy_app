@@ -41,6 +41,7 @@ class _CustomDateFieldState extends State<CustomDateField> {
               borderRadius: BorderRadius.circular(12),
               color: Palette.cendre.withOpacity(.15)),
           child: FormBuilderDateTimePicker(
+              locale: const Locale("fr"),
               format: DateFormat.yMd(),
               inputType: InputType.date,
               controller: widget.controller,

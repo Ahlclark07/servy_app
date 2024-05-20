@@ -50,6 +50,12 @@ dependencies:
   flutter_sound: ^9.4.11
   permission_handler: ^11.3.1
   audioplayers: ^6.0.0
+  flutter_firebase_chat_core: ^1.6.7
+  flutter_chat_ui: ^1.6.13
+  cloud_firestore: ^4.17.3
+  flutter_chat_types: ^3.6.2
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

@@ -59,7 +59,6 @@ class _MateriauFormState extends State<MateriauForm> {
                                     photo: photo,
                                     nom: nomController.text,
                                     prix: prixController.text);
-                            inspect(response);
 
                             setState(() {
                               id = response[1];

@@ -17,7 +17,7 @@ class _TabulationButtonState extends State<TabulationButton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
   }
 
@@ -47,7 +47,7 @@ class _TabulationButtonState extends State<TabulationButton>
         builder: (BuildContext context, Widget? child) {
           return Transform.rotate(
             angle: _controller.value * 0.5 * 3.14, // Angle de rotation (90°)
-            child: Icon(Icons.arrow_right),
+            child: const Icon(Icons.arrow_right),
           );
         },
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:servy_app/design/design_data.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -45,6 +46,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
               borderRadius: BorderRadius.circular(12),
               color: Palette.cendre.withOpacity(.15)),
           child: FormBuilderTextField(
+              autovalidateMode: AutovalidateMode.always,
+              validator: widget.isNumber
+                  ? FormBuilderValidators.compose([
+                      FormBuilderValidators.numeric(),
+                      FormBuilderValidators.equalLength(8,
+                          errorText: "Entrez un numéro valide")
+                    ])
+                  : widget.name == "email"
+                      ? FormBuilderValidators.email(
+                          errorText: "Veuillez entrer un email valide")
+                      : FormBuilderValidators.minLength(2,
+                          errorText: "2 lettres c'est le minimum"),
               maxLines: widget.maxLines,
               onTap: () => setState(() {
                     showLabel = false;

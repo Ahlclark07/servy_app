@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:servy_app/design/design_data.dart';
 
 class CustomPasswordField extends StatefulWidget {
@@ -42,6 +43,8 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
               borderRadius: BorderRadius.circular(12),
               color: Palette.cendre.withOpacity(.15)),
           child: FormBuilderTextField(
+              validator: FormBuilderValidators.minLength(8,
+                  errorText: "Veuillez mettre un mot de passe à 8 caractères"),
               onTap: () => setState(() {
                     showLabel = false;
                   }),

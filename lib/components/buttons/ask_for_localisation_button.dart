@@ -1,10 +1,19 @@
 import 'package:async_button_builder/async_button_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:servy_app/design/design_data.dart';
 
-class LocalisationButton extends StatelessWidget {
+class LocalisationButton extends StatefulWidget {
   final void Function(Position pos) callback;
   const LocalisationButton({super.key, required this.callback});
+
+  @override
+  State<LocalisationButton> createState() => _LocalisationButtonState();
+}
+
+class _LocalisationButtonState extends State<LocalisationButton> {
+  bool dejaRempli = false;
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -40,29 +49,38 @@ class LocalisationButton extends StatelessWidget {
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     Position pos = await Geolocator.getCurrentPosition();
-    callback(pos);
+    widget.callback(pos);
     return pos;
   }
 
   @override
   Widget build(BuildContext context) {
     return AsyncButtonBuilder(
-      child: Text('Fournir votre localisation actuelle'),
+      child: const Text('Fournir votre localisation actuelle'),
       onPressed: () async {
         await _determinePosition();
       },
       builder: (context, child, callback, buttonState) {
-        if (buttonState == ButtonState.success()) {
-          return ElevatedButton(
-            child: child,
-            onPressed: null,
-          );
-        } else {
-          return ElevatedButton(
-            child: Text('Localisation fournie avec succès'),
-            onPressed: callback,
-          );
+        if (buttonState == const ButtonState.success()) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            setState(() {
+              dejaRempli = true;
+            });
+          });
         }
+        return dejaRempli
+            ? ElevatedButton(
+                style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Palette.background),
+                    foregroundColor: MaterialStatePropertyAll(Palette.blue)),
+                onPressed: null,
+                child: const Text('Localisation fournie avec succès'),
+              )
+            : ElevatedButton(
+                onPressed: callback,
+                child: child,
+              );
       },
     );
   }

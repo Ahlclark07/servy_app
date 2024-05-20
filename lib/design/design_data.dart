@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 class Palette {
   static Color primary = Colors.black;
   static Color background = Colors.white;
-  static Color blue = Color(0xFF0009E5);
+  static Color blue = const Color(0xFF0009E5);
   static Color cendre = Colors.grey;
-  static Color inputBackground = Color(0xFFF1F1F1);
+  static Color inputBackground = const Color(0xFFF1F1F1);
 }
 
 class Design {
@@ -14,7 +14,7 @@ class Design {
       border: InputBorder.none,
       floatingLabelBehavior: FloatingLabelBehavior.auto,
       iconColor: Palette.blue,
-      contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 0));
+      contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0));
   static ThemeData themeData = ThemeData(
       snackBarTheme: SnackBarThemeData(
         backgroundColor: Palette.blue,

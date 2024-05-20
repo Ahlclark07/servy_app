@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:servy_app/design/design_data.dart';
 
 class HomeSearchBar extends StatelessWidget implements PreferredSizeWidget {
-  const HomeSearchBar({super.key});
+  final TextEditingController controller = TextEditingController();
+  final ValueNotifier<String> queryNotifier;
+  HomeSearchBar({super.key, required this.queryNotifier});
 
   @override
   Widget build(BuildContext context) {
     return SearchBar(
+        controller: controller,
         autoFocus: true,
         hintText: "Rechercher un service ou un vendeur",
         elevation: const MaterialStatePropertyAll<double>(1),
@@ -22,7 +25,7 @@ class HomeSearchBar extends StatelessWidget implements PreferredSizeWidget {
               Icons.search,
               color: Palette.cendre,
             ),
-            onPressed: () => null,
+            onPressed: () => queryNotifier.value = controller.text,
           )
         ],
         leading: IconButton(
@@ -32,7 +35,7 @@ class HomeSearchBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text(
                     "En cours d'implémentation ! Vous pourrez plus tard faire des recherches en fon"),
               ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/pages/innerpages/accueil_inner_page.dart';
+import 'package:servy_app/pages/innerpages/chat_inner_page.dart';
 import 'package:servy_app/pages/innerpages/profil_inner_page.dart';
+import 'package:servy_app/pages/innerpages/recherche_inner_page.dart';
 import '../components/appbars/accueil_app_bar.dart';
 
 class MainPage extends StatefulWidget {
@@ -14,10 +15,23 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int pageActuelle = 0;
   final pages = [
-    Container(),
-    Container(),
+    const ChatInnerPage(),
     const ProfilInnerPage(),
   ];
+  late ValueNotifier<String> queryNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    queryNotifier = ValueNotifier<String>('');
+  }
+
+  @override
+  void dispose() {
+    queryNotifier.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,9 +44,13 @@ class _MainPageState extends State<MainPage> {
       appBar: pageActuelle != 3
           ? AccueilAppBar(
               showSearch: pageActuelle == 1,
-              callBack: () => setState(() {
-                    pageActuelle = 2;
-                  }))
+              callBack: () {
+                setState(() {
+                  pageActuelle = 2;
+                });
+              },
+              queryNotifier: queryNotifier,
+            )
           : AppBar(
               scrolledUnderElevation: 0,
               title: const Text("Votre profil"),
@@ -45,7 +63,10 @@ class _MainPageState extends State<MainPage> {
             }),
           );
         }
-        return pages[pageActuelle - 1];
+        if (pageActuelle == 1) {
+          return InnerPageRecherche(query: queryNotifier);
+        }
+        return pages[pageActuelle - 2];
       })),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: pageActuelle,

@@ -1,11 +1,12 @@
-import 'dart:developer';
-
 import 'package:async_builder/async_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:servy_app/components/cards/service_card.dart';
 import 'package:servy_app/components/cards/vendeur_card.dart';
 import 'package:servy_app/components/home_search_bar.dart';
+import 'package:servy_app/utils/auth_service.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
 class AccueilInnerPage extends StatefulWidget {
@@ -62,12 +63,8 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
               builder: (context, users) {
                 return users!.isNotEmpty
                     ? FlutterCarousel(
-                        items: List<VendeurCard>.generate(
-                            users.length,
-                            (index) => VendeurCard(
-                                nom: users[index]["nom"],
-                                img: users[index]["photoDeProfil"],
-                                profession: users[index]["profession"])),
+                        items: List<VendeurCard>.generate(users.length,
+                            (index) => VendeurCard(vendeur: users[index])),
                         options: CarouselOptions(
                           initialPage: 3,
                           viewportFraction: 1 / 2,
@@ -104,7 +101,7 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
                                 ((index) => ServiceCard(
                                     vendeur: services[index]["vendeur"],
                                     service: services[index],
-                                    onChange: () => null))),
+                                    onChange: () {}))),
                           ],
                         options: CarouselOptions(
                           viewportFraction: .94,

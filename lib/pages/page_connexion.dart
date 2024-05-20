@@ -16,6 +16,7 @@ class PageConnexion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    final _formKey = GlobalKey<FormBuilderState>();
     return Scaffold(
       appBar: AppBar(),
       body: Container(
@@ -23,6 +24,7 @@ class PageConnexion extends StatelessWidget {
         width: screenSize.width,
         height: screenSize.height,
         child: FormBuilder(
+          key: _formKey,
           child: Column(
             children: [
               Text(
@@ -56,23 +58,31 @@ class PageConnexion extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  final message = await AuthService().login(
-                    email: emailController.text,
-                    password: mdpController.text,
-                  );
+                  if (_formKey.currentState!.isValid) {
+                    final message = await AuthService().login(
+                      email: emailController.text,
+                      password: mdpController.text,
+                    );
 
-                  if (message!.contains('Success')) {
-                    final profilRempli = await ServyBackend().userExist();
-                    Navigator.of(context).popAndPushNamed(
-                        profilRempli == ServyBackend.success
-                            ? "/main"
-                            : "/remplirProfil");
+                    if (message!.contains('Success')) {
+                      final profilRempli = await ServyBackend().userExist();
+                      Navigator.of(context).popAndPushNamed(
+                          profilRempli == ServyBackend.success
+                              ? "/main"
+                              : "/remplirProfil");
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(message),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Remplisssez tous les champs"),
+                      ),
+                    );
                   }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(message),
-                    ),
-                  );
                 },
                 child: SizedBox(
                     width: screenSize.width - 60,

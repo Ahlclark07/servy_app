@@ -9,7 +9,7 @@ import 'package:servy_app/utils/servy_backend.dart';
 import '../components/forms/custom_text_field.dart';
 
 class PageRemplirProfil extends StatefulWidget {
-  PageRemplirProfil({super.key});
+  const PageRemplirProfil({super.key});
 
   @override
   State<PageRemplirProfil> createState() => _PageRemplirProfilState();
@@ -37,6 +37,8 @@ class _PageRemplirProfilState extends State<PageRemplirProfil> {
     currentPosition = pos;
   }
 
+  final _formKey = GlobalKey<FormBuilderState>();
+
   @override
   Widget build(BuildContext context) {
     final departement = ["Borgou", "Mono", "Littoral"];
@@ -53,6 +55,7 @@ class _PageRemplirProfilState extends State<PageRemplirProfil> {
           padding: const EdgeInsets.symmetric(horizontal: 30),
           width: screenSize.width,
           child: FormBuilder(
+            key: _formKey,
             child: Column(
               children: [
                 Text(
@@ -145,27 +148,33 @@ class _PageRemplirProfilState extends State<PageRemplirProfil> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final message = await ServyBackend().remplirProfil(
-                        nom: nomController.value.text,
-                        prenoms: prenomController.value.text,
-                        departement: departementValue,
-                        date: dateController.value.text,
-                        ville: villeValue,
-                        quartier: quartierValue,
-                        pos: currentPosition,
-                        telephone: "68714461");
-                    String texte;
-                    if (message == ServyBackend.success) {
-                      Navigator.of(context).popAndPushNamed("/main");
-                      texte = "Bienvenu ${nomController.text}";
+                    if (_formKey.currentState!.isValid) {
+                      final message = await ServyBackend().remplirProfil(
+                          nom: nomController.value.text,
+                          prenoms: prenomController.value.text,
+                          departement: departementValue,
+                          date: dateController.value.text,
+                          ville: villeValue,
+                          quartier: quartierValue,
+                          pos: currentPosition,
+                          telephone: numeroController.text);
+                      String texte;
+                      if (message == ServyBackend.success) {
+                        Navigator.of(context).popAndPushNamed("/main");
+                        texte = "Bienvenu ${nomController.text}";
+                      } else {
+                        texte = message;
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(texte),
+                        ),
+                      );
                     } else {
-                      texte = message;
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Validez tous les champs requis"),
+                      ));
                     }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(texte),
-                      ),
-                    );
                   },
                   child: SizedBox(
                       width: screenSize.width - 60,

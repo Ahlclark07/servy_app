@@ -33,7 +33,7 @@ class _PageIntroState extends State<PageIntro> {
         Theme.of(context).outlinedButtonTheme.style;
     setLink();
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: screenSize.width,
         height: screenSize.height,
         child: Stack(
@@ -94,27 +94,27 @@ class _PageIntroState extends State<PageIntro> {
                 bottom: 15,
                 child: Container(
                   width: screenSize.width,
-                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: slidePosition == 0
                         ? [
                             TextButton(
-                                child: Text(IntroText.actionpasser),
+                                child: const Text(IntroText.actionpasser),
                                 onPressed: () => Navigator.of(context)
                                     .popAndPushNamed(link)),
                             OutlinedButton(
                               onPressed: () {
                                 if (slidePosition != 2) {
                                   controller.nextPage(
-                                      duration: Duration(milliseconds: 200));
+                                      duration: const Duration(milliseconds: 200));
                                 } else {
                                   Navigator.of(context).popAndPushNamed(link);
                                 }
                               },
                               child: slidePosition != 2
-                                  ? Icon(Icons.arrow_forward)
-                                  : Text("Continuer"),
+                                  ? const Icon(Icons.arrow_forward)
+                                  : const Text("Continuer"),
                             )
                           ]
                         : [
@@ -122,10 +122,9 @@ class _PageIntroState extends State<PageIntro> {
                                 onPressed: () async {
                                   if (slidePosition != 0) {
                                     controller.previousPage(
-                                        duration: Duration(milliseconds: 200));
+                                        duration: const Duration(milliseconds: 200));
                                   }
                                 },
-                                child: Icon(Icons.arrow_back),
                                 style: outlinedButtonStyle?.copyWith(
                                   foregroundColor:
                                       MaterialStatePropertyAll<Color>(
@@ -133,21 +132,22 @@ class _PageIntroState extends State<PageIntro> {
                                   backgroundColor:
                                       MaterialStatePropertyAll<Color>(
                                           Palette.background),
-                                )),
+                                ),
+                                child: const Icon(Icons.arrow_back)),
                             TextButton(
-                                child: Text(IntroText.actionpasser),
+                                child: const Text(IntroText.actionpasser),
                                 onPressed: () => Navigator.of(context)
                                     .popAndPushNamed(link)),
                             OutlinedButton(
                               onPressed: () {
                                 if (slidePosition != 2) {
                                   controller.nextPage(
-                                      duration: Duration(milliseconds: 200));
+                                      duration: const Duration(milliseconds: 200));
                                 } else {
                                   Navigator.of(context).popAndPushNamed(link);
                                 }
                               },
-                              child: Icon(Icons.arrow_forward),
+                              child: const Icon(Icons.arrow_forward),
                             )
                           ],
                   ),
@@ -175,8 +175,8 @@ class IntroSectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 40),
-      margin: EdgeInsets.only(top: 100, bottom: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      margin: const EdgeInsets.only(top: 100, bottom: 25),
       child: Column(
         children: [
           Image.asset(imageName),

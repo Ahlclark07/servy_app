@@ -66,6 +66,7 @@ class PageInscription extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
+                    emailController.value.composing.isValid;
                     final message = await AuthService().registration(
                       email: emailController.text,
                       password: mdpController.text,

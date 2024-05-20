@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:async_builder/async_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:servy_app/components/buttons/ask_for_file_button.dart';
 import 'package:servy_app/components/forms/customSelectField.dart';
@@ -29,6 +30,7 @@ class _PageCreationServiceState extends State<PageCreationService> {
   final TextEditingController delaiController = TextEditingController();
 
   final recorder = FlutterSoundRecorder();
+  final _formKey = GlobalKey<FormBuilderState>();
   @override
   void initState() {
     super.initState();
@@ -67,190 +69,199 @@ class _PageCreationServiceState extends State<PageCreationService> {
         leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.arrow_back)),
-        title: Text("Creation de service"),
+        title: const Text("Creation de service"),
         scrolledUnderElevation: 0,
       ),
       body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              AsyncBuilder(
-                  retain: true,
-                  waiting: (context) => const CircularProgressIndicator(),
-                  future: ServyBackend().getListOfServices(),
-                  builder: (context, services) {
-                    List<String> titres = [];
-                    List<String> values = [];
+        child: FormBuilder(
+          key: _formKey,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                AsyncBuilder(
+                    retain: true,
+                    waiting: (context) => const CircularProgressIndicator(),
+                    future: ServyBackend().getListOfServices(),
+                    builder: (context, services) {
+                      List<String> titres = [];
+                      List<String> values = [];
 
-                    services?.forEach((element) {
-                      titres.add(element["nom"]);
-                      values.add(element["_id"]);
-                    });
-
-                    return Column(
-                      children: [
-                        Text(
-                          "Créez un service professionnel",
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        CustomSelectField(
-                            labelTitle: "Services",
-                            labelText: "Choisissez un service",
-                            list: titres,
-                            values: values,
-                            controller: (val) => setState(() {
-                                  service = val;
-                                }),
-                            name: "services",
-                            icon: Icons.work),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        AskForFile(
-                            callback: (File f) => setState(() {
-                                  photos.add(f);
-                                }),
-                            limit: 4,
-                            nom: "photos du service"),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        CustomTextField(
-                            labelTitle: "Tarif",
-                            labelText: "Entrez le tarif en FCFA",
-                            controller: tarifController,
-                            name: "tarif",
-                            icon: Icons.money),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        CustomTextField(
-                            labelTitle: "Delai en jours",
-                            labelText: "Entrez le delai de réalisation en jour",
-                            controller: delaiController,
-                            name: "delai",
-                            icon: Icons.timelapse),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        CustomTextField(
-                            labelTitle: "Description du service",
-                            labelText: "Entrez la description du service",
-                            maxLines: 7,
-                            controller: descController,
-                            name: "delai",
-                            icon: Icons.timelapse),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        AsyncBuilder(
-                            initial: null,
-                            stream: recorder.onProgress,
-                            builder: (context, value) {
-                              return ElevatedButton(
-                                  onPressed: () async {
-                                    if (recorder.isRecording) {
-                                      await stop();
-                                      inspect(await recorder.getRecordURL(
-                                          path: "audio"));
-                                    } else {
-                                      await record();
-                                    }
-                                    setState(() {});
-                                  },
-                                  child: SizedBox(
-                                    width: 150,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(recorder.isRecording
-                                            ? Icons.stop
-                                            : Icons.mic),
-                                        Text(
-                                            "Durée : ${value != null ? value.duration.toString().substring(2, 7) : "00:00"}")
-                                      ],
-                                    ),
-                                  ));
-                            }),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                      ],
-                    );
-                  }),
-              Container(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        const Expanded(child: Text("Ajouter du matériel")),
-                        MaterialButton(
-                          onPressed: () {
-                            setState(() {
-                              materiels.contains("")
-                                  ? materiels.remove("")
-                                  : materiels.add("");
-                              inspect(materiels);
-                            });
-                          },
-                          child: Icon(materiels.contains("")
-                              ? Icons.remove_circle
-                              : Icons.add),
-                        )
-                      ],
-                    ),
-                    ...List<MateriauForm>.generate(materiels.length, (index) {
-                      return MateriauForm(callback: (id) {
-                        setState(() {
-                          materiels[index] = id;
-                        });
+                      services?.forEach((element) {
+                        titres.add(element["nom"]);
+                        values.add(element["_id"]);
                       });
-                    })
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final response = await ServyBackend()
-                      .createServicePrestataire(
-                          photos: photos,
-                          service: service,
-                          tarif: tarifController.text,
-                          delai: delaiController.text,
-                          audio: audio,
-                          desc: descController.text,
-                          materiels: materiels);
 
-                  inspect(response);
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("${response[0]} ${response[1]}"),
-                    ),
-                  );
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  "Confirmer la création",
-                  textAlign: TextAlign.center,
+                      return Column(
+                        children: [
+                          Text(
+                            "Créez un service professionnel",
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CustomSelectField(
+                              labelTitle: "Services",
+                              labelText: "Choisissez un service",
+                              list: titres,
+                              values: values,
+                              controller: (val) => setState(() {
+                                    service = val;
+                                  }),
+                              name: "services",
+                              icon: Icons.work),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          AskForFile(
+                              callback: (File f) => setState(() {
+                                    photos.add(f);
+                                  }),
+                              limit: 4,
+                              nom: "photos du service"),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CustomTextField(
+                              labelTitle: "Tarif",
+                              labelText: "Entrez le tarif en FCFA",
+                              controller: tarifController,
+                              name: "tarif",
+                              icon: Icons.money),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CustomTextField(
+                              labelTitle: "Delai en jours",
+                              labelText:
+                                  "Entrez le delai de réalisation en jour",
+                              controller: delaiController,
+                              name: "delai",
+                              icon: Icons.timelapse),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CustomTextField(
+                              labelTitle: "Description du service",
+                              labelText: "Entrez la description du service",
+                              maxLines: 7,
+                              controller: descController,
+                              name: "delai",
+                              icon: Icons.timelapse),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          AsyncBuilder(
+                              initial: null,
+                              stream: recorder.onProgress,
+                              builder: (context, value) {
+                                return ElevatedButton(
+                                    onPressed: () async {
+                                      if (recorder.isRecording) {
+                                        await stop();
+                                        inspect(await recorder.getRecordURL(
+                                            path: "audio"));
+                                      } else {
+                                        await record();
+                                      }
+                                      setState(() {});
+                                    },
+                                    child: SizedBox(
+                                      width: 150,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(recorder.isRecording
+                                              ? Icons.stop
+                                              : Icons.mic),
+                                          Text(
+                                              "Durée : ${value != null ? value.duration.toString().substring(2, 7) : "00:00"}")
+                                        ],
+                                      ),
+                                    ));
+                              }),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      );
+                    }),
+                Container(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Expanded(child: Text("Ajouter du matériel")),
+                          MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                materiels.contains("")
+                                    ? materiels.remove("")
+                                    : materiels.add("");
+                              });
+                            },
+                            child: Icon(materiels.contains("")
+                                ? Icons.remove_circle
+                                : Icons.add),
+                          )
+                        ],
+                      ),
+                      ...List<MateriauForm>.generate(materiels.length, (index) {
+                        return MateriauForm(callback: (id) {
+                          setState(() {
+                            materiels[index] = id;
+                          });
+                        });
+                      })
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.isValid) {
+                      final response = await ServyBackend()
+                          .createServicePrestataire(
+                              photos: photos,
+                              service: service,
+                              tarif: tarifController.text,
+                              delai: delaiController.text,
+                              audio: audio,
+                              desc: descController.text,
+                              materiels: materiels);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("${response[0]} ${response[1]}"),
+                        ),
+                      );
+                      Navigator.of(context).pop();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Remplissez les champs requis"),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    "Confirmer la création",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -42,7 +42,7 @@ class ProfilInnerPage extends StatelessWidget {
                       verticalDirection: VerticalDirection.down,
                       children: [
                         Text(
-                          "${user?["nom_complet"]}, ${user?["profession"]}",
+                          "${user?["nom_complet"]}, ${user?["profession"] ?? "particulier"}",
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
@@ -56,7 +56,7 @@ class ProfilInnerPage extends StatelessWidget {
                               ?.copyWith(
                                   fontSize: 18, fontWeight: FontWeight.w800),
                         ),
-                        Container(
+                        SizedBox(
                           width: 250,
                           child: Flex(
                             direction: Axis.horizontal,
@@ -113,7 +113,6 @@ class ProfilInnerPage extends StatelessWidget {
                     future: ServyBackend().getUserServices(user["_id"]),
                     waiting: (context) => const CircularProgressIndicator(),
                     builder: (context, list) {
-                      inspect(list);
                       if (list!.isEmpty) {
                         return const Center(
                             child: Text("Aucun service pour le moment"));
@@ -125,7 +124,7 @@ class ProfilInnerPage extends StatelessWidget {
                               (index) => ServiceCard(
                                   vendeur: user,
                                   service: list[index],
-                                  onChange: () => null))
+                                  onChange: () {}))
                         ],
                       );
                     }),
@@ -137,7 +136,32 @@ class ProfilInnerPage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                const Center(child: Text("Aucune commande pour le moment"))
+                AsyncBuilder(
+                    future: ServyBackend().getCommandes(),
+                    waiting: (context) => const CircularProgressIndicator(),
+                    builder: (context, list) {
+                      if (list!.isEmpty) {
+                        return const Center(
+                            child: Text("Aucun service pour le moment"));
+                      }
+                      return Column(
+                        children: [
+                          ...List<Container>.generate(
+                              list.length,
+                              (index) => Container(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(list[index]["_id"]),
+                                        Text(
+                                            "${list[index]["service"]["tarif"]} FCFA"),
+                                      ],
+                                    ),
+                                  ))
+                        ],
+                      );
+                    }),
               ],
             );
           }),
