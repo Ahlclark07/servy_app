@@ -13,7 +13,8 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(room.name! != "" ? room.name! : 'Chat'),
+        title: Text(
+            room.metadata?["name"] != null ? room.metadata!["name"] : 'Chat'),
       ),
       body: StreamBuilder<List<types.Message>>(
         stream: FirebaseChatCore.instance.messages(room),

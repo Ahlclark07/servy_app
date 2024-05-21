@@ -11,12 +11,12 @@ class PageConnexion extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController mdpController = TextEditingController();
   final TextEditingController mdpConfirmController = TextEditingController();
+  final _formKey = GlobalKey<FormBuilderState>();
   PageConnexion({super.key});
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final _formKey = GlobalKey<FormBuilderState>();
     return Scaffold(
       appBar: AppBar(),
       body: Container(

@@ -101,12 +101,16 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
                                 ((index) => ServiceCard(
                                     vendeur: services[index]["vendeur"],
                                     service: services[index],
-                                    onChange: () {}))),
+                                    onChange: () {
+                                      setState(() {
+                                        shouldUpHeight = !shouldUpHeight;
+                                      });
+                                    }))),
                           ],
                         options: CarouselOptions(
                           viewportFraction: .94,
                           showIndicator: false,
-                          height: shouldUpHeight ? 320 : 280,
+                          height: 325,
                           enableInfiniteScroll: true,
                         ));
               }),

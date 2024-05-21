@@ -72,7 +72,7 @@ class InnerPageRecherche extends StatelessWidget {
                               options: CarouselOptions(
                                 viewportFraction: .94,
                                 showIndicator: false,
-                                height: 320,
+                                height: 325,
                                 enableInfiniteScroll: true,
                               )),
                     ],

@@ -50,10 +50,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
               validator: widget.isNumber
                   ? FormBuilderValidators.compose([
                       FormBuilderValidators.numeric(),
-                      FormBuilderValidators.equalLength(
-                          widget.name == "tel" ? 8 : 1,
-                          errorText:
-                              "Entrez ${widget.name == "tel" ? "un numéro" : "une valeur"} valide")
+                      widget.name == "tel"
+                          ? FormBuilderValidators.equalLength(8,
+                              errorText: "Entrez un numéro valide")
+                          : FormBuilderValidators.minLength(1,
+                              errorText: "Entrez un nombre valide")
                     ])
                   : widget.name == "email"
                       ? FormBuilderValidators.email(

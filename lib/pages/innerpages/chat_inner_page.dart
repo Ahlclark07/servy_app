@@ -26,11 +26,11 @@ class ChatInnerPage extends StatelessWidget {
                 (index) => GestureDetector(
                       child: Container(
                           decoration: BoxDecoration(
-                              border: Border(
-                            bottom: BorderSide(color: Palette.blue, width: .5),
-                          )),
-                          height: 70,
-                          margin: const EdgeInsets.symmetric(vertical: 10),
+                              color: index % 2 == 0
+                                  ? Palette.cendre.withOpacity(.15)
+                                  : Palette.background),
+                          height: 100,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Row(
                             children: [
                               CircleAvatar(
