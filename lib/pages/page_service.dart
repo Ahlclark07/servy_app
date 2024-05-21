@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -23,6 +21,7 @@ class PageService extends StatelessWidget {
       bottomNavigationBar: Container(
         color: Palette.blue,
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
+        height: 90,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -31,31 +30,38 @@ class PageService extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Palette.background, fontWeight: FontWeight.w700),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                final response = await ServyBackend()
-                    .passerCommande(serviceprestataire: service["_id"]);
-                if (response[0] == ServyBackend.success) {
-                  final room = await FirebaseChatCore.instance.createRoom(
-                      types.User(id: vendeur["idFirebase"]),
-                      metadata: {
-                        "name": response[1],
-                        "imageUrl": vendeur["photoDeProfil"]
-                      });
+            (vendeur["_id"] != ServyBackend().user["_id"] &&
+                    service["verifie"] == "Accepté")
+                ? ElevatedButton(
+                    onPressed: () async {
+                      final response = await ServyBackend()
+                          .passerCommande(serviceprestataire: service["_id"]);
+                      if (response[0] == ServyBackend.success) {
+                        final room = await FirebaseChatCore.instance.createRoom(
+                            types.User(id: vendeur["idFirebase"]),
+                            metadata: {
+                              "name": response[1],
+                              "imageUrl": vendeur["photoDeProfil"]
+                            });
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Bien ca a marché hein"),
-                    ),
-                  );
-                }
-              },
-              style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
-                  foregroundColor: MaterialStatePropertyAll(Palette.blue),
-                  backgroundColor:
-                      MaterialStatePropertyAll<Color>(Palette.background)),
-              child: const Text("Commander"),
-            )
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Bien ca a marché hein"),
+                          ),
+                        );
+                      }
+                    },
+                    style: Theme.of(context)
+                        .elevatedButtonTheme
+                        .style
+                        ?.copyWith(
+                            foregroundColor:
+                                MaterialStatePropertyAll(Palette.blue),
+                            backgroundColor: MaterialStatePropertyAll<Color>(
+                                Palette.background)),
+                    child: const Text("Commander"),
+                  )
+                : Container()
           ],
         ),
       ),
@@ -191,7 +197,29 @@ class PageService extends StatelessWidget {
                         ],
                       )),
             ),
-          )
+          ),
+          service["verifie"] == "refusé"
+              ? SizedBox(
+                  width: width - 40,
+                  child: Flex(
+                    direction: Axis.horizontal,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          service['messageAdmin']!,
+                          maxLines: 2,
+                          softWrap: true,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container()
         ]),
       ),
     );

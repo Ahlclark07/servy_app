@@ -1,16 +1,10 @@
-import 'dart:developer';
-
 import 'package:async_builder/async_builder.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart';
+
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:servy_app/components/chat_page.dart';
-import 'package:servy_app/design/design_data.dart';
-import 'package:servy_app/utils/auth_service.dart';
 import 'package:servy_app/utils/servy_backend.dart';
+import 'package:servy_app/design/design_data.dart';
 
 class ChatInnerPage extends StatelessWidget {
   const ChatInnerPage({super.key});
@@ -20,9 +14,8 @@ class ChatInnerPage extends StatelessWidget {
     return AsyncBuilder(
       stream: FirebaseChatCore.instance.rooms(),
       initial: const [],
-      waiting: (context) => const Text("Attends"),
+      waiting: (context) => const Center(child: CircularProgressIndicator()),
       builder: (context, data) {
-        inspect(data);
         if (data == null || data.isEmpty) {
           return const Center(child: Text('No conversations'));
         }
@@ -42,14 +35,14 @@ class ChatInnerPage extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                    "${ServyBackend.basePhotodeProfilURL}/${data[index].metadata["imageUrl"] ?? "1715124451532-bracelet.jpeg"}"),
+                                    "${ServyBackend.basePhotodeProfilURL}/${data[index].metadata?["imageUrl"] ?? "1715124451532-bracelet.jpeg"}"),
                                 radius: 60,
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
-                                    child: Text(data[index].metadata["name"] ==
+                                    child: Text(data[index].metadata?["name"] ==
                                                 null ||
                                             data[index].metadata["name"] == ""
                                         ? '#IDdeLaCommandeCree'

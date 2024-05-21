@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:async_builder/async_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -36,8 +34,6 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
             return Container();
           },
           builder: (context, user) {
-            inspect(user);
-
             return AppBar(
               bottom: showSearch
                   ? HomeSearchBar(queryNotifier: queryNotifier)

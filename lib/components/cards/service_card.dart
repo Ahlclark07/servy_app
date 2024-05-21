@@ -51,12 +51,12 @@ class _ServiceCardState extends State<ServiceCard> {
             color: Colors.grey.shade200,
             offset: const Offset(1, 0),
             blurRadius: 0,
-            spreadRadius: 3,
+            spreadRadius: 1,
           ),
           BoxShadow(
               color: Colors.grey.shade200,
-              spreadRadius: 4,
-              blurRadius: 6,
+              spreadRadius: 1,
+              blurRadius: 2,
               offset: const Offset(1, 1))
         ]),
         child: Column(

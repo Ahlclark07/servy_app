@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:async_builder/async_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:servy_app/components/cards/service_card.dart';
@@ -88,7 +86,7 @@ class ProfilInnerPage extends StatelessWidget {
                     color: Palette.blue,
                   ),
                 ),
-                !user["enTransition"]
+                !user["enTransition"] && user["role"] == "client"
                     ? ElevatedButton(
                         onPressed: () =>
                             Navigator.pushNamed(context, "/devenirVendeur"),
@@ -101,6 +99,10 @@ class ProfilInnerPage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
+                user["enTransition"]
+                    ? Text(
+                        "Messsage de l'admin ${user["demande"] != null ? user["demande"]["show_message"] : ""}")
+                    : Container(),
                 Text("Liste des services créés",
                     style: Theme.of(context)
                         .textTheme

@@ -132,6 +132,7 @@ class _PageCreationServiceState extends State<PageCreationService> {
                               labelText: "Entrez le tarif en FCFA",
                               controller: tarifController,
                               name: "tarif",
+                              isNumber: true,
                               icon: Icons.money),
                           const SizedBox(
                             height: 20,
@@ -142,6 +143,7 @@ class _PageCreationServiceState extends State<PageCreationService> {
                                   "Entrez le delai de réalisation en jour",
                               controller: delaiController,
                               name: "delai",
+                              isNumber: true,
                               icon: Icons.timelapse),
                           const SizedBox(
                             height: 20,
@@ -164,8 +166,8 @@ class _PageCreationServiceState extends State<PageCreationService> {
                                     onPressed: () async {
                                       if (recorder.isRecording) {
                                         await stop();
-                                        inspect(await recorder.getRecordURL(
-                                            path: "audio"));
+                                        await recorder.getRecordURL(
+                                            path: "audio");
                                       } else {
                                         await record();
                                       }

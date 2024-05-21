@@ -28,12 +28,12 @@ class VendeurCard extends StatelessWidget {
             color: Colors.grey.shade200,
             offset: const Offset(1, 0),
             blurRadius: 0,
-            spreadRadius: 3,
+            spreadRadius: 1,
           ),
           BoxShadow(
               color: Colors.grey.shade200,
-              spreadRadius: 4,
-              blurRadius: 6,
+              spreadRadius: .5,
+              blurRadius: 1,
               offset: const Offset(1, 1))
         ]),
         child: Column(
