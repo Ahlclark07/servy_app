@@ -1,22 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:servy_app/components/audio_player.dart';
 import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/pages/page_profil.dart';
 import 'package:servy_app/utils/servy_backend.dart';
-
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class PageService extends StatelessWidget {
   final Map service;
   final Map vendeur;
+  LatLng _parseCoordinates(String coordinates) {
+    List<String> parts =
+        coordinates.split('|').map((part) => part.trim()).toList();
+    double longitude = double.parse(parts[0]);
+    double latitude = double.parse(parts[1]);
+    return LatLng(latitude, longitude);
+  }
 
   const PageService({super.key, required this.service, required this.vendeur});
   @override
   Widget build(BuildContext context) {
     final images = service["images"];
     final width = MediaQuery.of(context).size.width;
+    LatLng parseCoordinates =
+        _parseCoordinates(vendeur["adresses"][0]["localisationMap"]);
+    LatLng parseCoordinatesUser = _parseCoordinates(
+        ServyBackend().user["adresses"][0]["localisationMap"]);
     return Scaffold(
       bottomNavigationBar: Container(
         color: Palette.blue,
@@ -219,7 +231,12 @@ class PageService extends StatelessWidget {
                     ],
                   ),
                 )
-              : Container()
+              : Container(),
+          Text(
+              "Distance de vous : ${Geolocator.distanceBetween(parseCoordinates.latitude, parseCoordinates.longitude, parseCoordinatesUser.latitude, parseCoordinatesUser.longitude)}m"),
+          const SizedBox(
+            height: 30,
+          )
         ]),
       ),
     );

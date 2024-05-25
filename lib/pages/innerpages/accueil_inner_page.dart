@@ -1,12 +1,10 @@
 import 'package:async_builder/async_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart';
-import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+
 import 'package:servy_app/components/cards/service_card.dart';
 import 'package:servy_app/components/cards/vendeur_card.dart';
 import 'package:servy_app/components/home_search_bar.dart';
-import 'package:servy_app/utils/auth_service.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
 class AccueilInnerPage extends StatefulWidget {
@@ -27,14 +25,14 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Who would you like to hire today ?",
+            "Que recherchez vous aujourd'hui ?",
             style: Theme.of(context).textTheme.displaySmall,
           ),
           const SizedBox(
             height: 30,
           ),
           Text(
-            "Connect with the most talented Freelancer on Benin.",
+            "Entrez en contact avec des centaines d'artisans et d'ouvriers talentueux au Benin.",
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(

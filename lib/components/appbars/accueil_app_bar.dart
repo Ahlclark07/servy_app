@@ -21,7 +21,8 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       child: AsyncBuilder(
           future: ServyBackend().getConnectedUser(),
-          waiting: (context) => const CircularProgressIndicator(),
+          waiting: (context) =>
+              const Center(child: CircularProgressIndicator()),
           error: (context, error, stackTrace) {
             SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
               ScaffoldMessenger.of(context).showSnackBar(

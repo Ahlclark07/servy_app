@@ -27,7 +27,7 @@ class ChatInnerPage extends StatelessWidget {
                       child: Container(
                           decoration: BoxDecoration(
                               color: index % 2 == 0
-                                  ? Palette.cendre.withOpacity(.15)
+                                  ? Palette.blue.withOpacity(.05)
                                   : Palette.background),
                           height: 100,
                           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -42,11 +42,17 @@ class ChatInnerPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
-                                    child: Text(data[index].metadata?["name"] ==
-                                                null ||
-                                            data[index].metadata["name"] == ""
-                                        ? '#IDdeLaCommandeCree'
-                                        : "#C${data[index].metadata["name"]}"),
+                                    child: Text(
+                                      data[index].metadata?["name"] == null ||
+                                              data[index].metadata["name"] == ""
+                                          ? '#IDdeLaCommandeCree'
+                                          : "#C${data[index].metadata["name"]}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 259,

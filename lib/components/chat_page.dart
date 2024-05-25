@@ -21,6 +21,9 @@ class ChatPage extends StatelessWidget {
         initialData: const [],
         builder: (context, snapshot) {
           return Chat(
+            emptyState: const Center(
+              child: Text("Pas de message, envoyez un message !"),
+            ),
             messages: snapshot.data!,
             onSendPressed: (partialText) async {
               final message = types.PartialText(text: partialText.text);

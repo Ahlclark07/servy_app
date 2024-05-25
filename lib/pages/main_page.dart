@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:servy_app/pages/innerpages/accueil_inner_page.dart';
 import 'package:servy_app/pages/innerpages/chat_inner_page.dart';
 import 'package:servy_app/pages/innerpages/profil_inner_page.dart';
 import 'package:servy_app/pages/innerpages/recherche_inner_page.dart';
+import 'package:servy_app/utils/servy_backend.dart';
 import '../components/appbars/accueil_app_bar.dart';
 
 class MainPage extends StatefulWidget {
@@ -35,7 +37,8 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: pageActuelle == 3
+      floatingActionButton: pageActuelle == 3 &&
+              ServyBackend().user["role"] != "client"
           ? FloatingActionButton(
               onPressed: () => Navigator.of(context).pushNamed("/creerService"),
               child: const Icon(Icons.add),

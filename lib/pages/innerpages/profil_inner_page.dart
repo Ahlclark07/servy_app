@@ -1,12 +1,19 @@
+
 import 'package:async_builder/async_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:servy_app/components/buttons/refresh_button.dart';
 import 'package:servy_app/components/cards/service_card.dart';
 import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
-class ProfilInnerPage extends StatelessWidget {
+class ProfilInnerPage extends StatefulWidget {
   const ProfilInnerPage({super.key});
 
+  @override
+  State<ProfilInnerPage> createState() => _ProfilInnerPageState();
+}
+
+class _ProfilInnerPageState extends State<ProfilInnerPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -55,7 +62,7 @@ class ProfilInnerPage extends StatelessWidget {
                                   fontSize: 18, fontWeight: FontWeight.w800),
                         ),
                         SizedBox(
-                          width: 250,
+                          width: 200,
                           child: Flex(
                             direction: Axis.horizontal,
                             children: [
@@ -75,7 +82,8 @@ class ProfilInnerPage extends StatelessWidget {
                           ),
                         )
                       ],
-                    )
+                    ),
+                    RefreshButton(callback: () => setState(() {}))
                   ],
                 ),
                 Center(
@@ -99,10 +107,19 @@ class ProfilInnerPage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                user["enTransition"]
+                user["demande"] != null &&
+                        user["demande"]["status"] != "acceptée"
                     ? Text(
-                        "Messsage de l'admin ${user["demande"] != null ? user["demande"]["show_message"] : ""}")
+                        "Messsage de l'admin : ${user["demande"] != null ? user["demande"]["show_message"] : ""}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.red),
+                      )
                     : Container(),
+                const SizedBox(
+                  height: 20,
+                ),
                 Text("Liste des services créés",
                     style: Theme.of(context)
                         .textTheme

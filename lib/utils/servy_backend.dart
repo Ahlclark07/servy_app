@@ -10,7 +10,8 @@ import 'package:uno/uno.dart';
 
 class ServyBackend {
   static late final ServyBackend _instance;
-  static String baseURL = "http://192.168.1.102:300";
+  // static String baseURL = "https://viensfaireducash.com";
+  static String baseURL = "http://192.168.1.103:300";
   static String basePhotodeProfilURL = "$baseURL/uploads/images/photodeprofils";
   static String basePhotodeServicesPrestataires =
       "$baseURL/uploads/images/servicesprestataires";
@@ -18,6 +19,7 @@ class ServyBackend {
   static String baseAudio = "$baseURL/uploads/audios/servicesprestataires";
   static const String echec = "echec";
   static const String success = "success";
+  bool enTransition = false;
   Map<String, dynamic> user = {};
   Uno uno = Uno(
     baseURL: baseURL,
@@ -40,7 +42,10 @@ class ServyBackend {
       if (token != null) {
         _instance.uno = Uno(
           baseURL: baseURL,
-          headers: {"Authorization": "Bearer $token"},
+          headers: {
+            "Authorization": "Bearer $token",
+            "Accept": "application/json"
+          },
         );
         await userExist();
       } else {
@@ -73,7 +78,10 @@ class ServyBackend {
       if (token != null) {
         _instance.uno = Uno(
           baseURL: baseURL,
-          headers: {"Authorization": "Bearer $token"},
+          headers: {
+            "Authorization": "Bearer $token",
+            "Accept": "application/json"
+          },
         );
       }
     }
@@ -106,7 +114,8 @@ class ServyBackend {
     });
 
     try {
-      await uno.post("/users/becomeClient", data: formData);
+      await uno.post("/users/becomeClient",
+          data: formData, responseType: ResponseType.arraybuffer);
 
       await FirebaseChatCore.instance.createUserInFirestore(types.User(
           id: AuthService().currentUser!.uid,
@@ -115,6 +124,7 @@ class ServyBackend {
 
       return ServyBackend.success;
     } on UnoError catch (error) {
+      inspect(error);
       return "${ServyBackend.echec} : ${error.message}";
     }
   }
@@ -129,6 +139,8 @@ class ServyBackend {
       formData.add("profession", profession);
       formData.addFile("carteidentite", carte.path);
       await uno.post("/users/becomeSeller", data: formData);
+      enTransition = true;
+      await rafraichir();
       return ServyBackend.success;
     } on UnoError catch (error) {
       return "${ServyBackend.echec} : ${error.message}";
@@ -199,11 +211,16 @@ class ServyBackend {
   }
 
   Future<Map<String, dynamic>> getConnectedUser() async {
+    // A régler plus tard if (user.isNotEmpty && !enTransition) return user;
     if (user.isNotEmpty) return user;
 
     try {
       final response = await uno.get("/users/getUser");
+
       user = response.data["user"];
+
+      user["demande"] = response.data["demande"];
+      enTransition = user["enTransition"];
 
       await FirebaseChatCore.instance.createUserInFirestore(types.User(
         id: AuthService().currentUser!.uid,
@@ -214,10 +231,15 @@ class ServyBackend {
         if (token != null) {
           uno = Uno(
             baseURL: baseURL,
-            headers: {"Authorization": "Bearer $token"},
+            headers: {
+              "Authorization": "Bearer $token",
+              "Accept": "application/json"
+            },
           );
           final response = await uno.get("/users/getUser");
           user = response.data["user"];
+          user["demande"] = response.data["demande"];
+          enTransition = user["enTransition"];
 
           await FirebaseChatCore.instance.createUserInFirestore(types.User(
             id: AuthService().currentUser!.uid,
@@ -230,6 +252,36 @@ class ServyBackend {
       inspect(error);
     }
     return user;
+  }
+
+  Future<void> rafraichir() async {
+    try {
+      final response = await uno.get("/users/getUser");
+      user = response.data["user"];
+      user["demande"] = response.data["demande"];
+      enTransition = user["enTransition"];
+    } on UnoError catch (error) {
+      if (error.response?.status == 401) {
+        final token = await AuthService().currentUser?.getIdToken();
+        if (token != null) {
+          uno = Uno(
+            baseURL: baseURL,
+            headers: {
+              "Authorization": "Bearer $token",
+              "Accept": "application/json"
+            },
+          );
+          final response = await uno.get("/users/getUser");
+          user = response.data["user"];
+          user["demande"] = response.data["demande"];
+          enTransition = user["enTransition"];
+        }
+      } else {
+        throw "Une erreur s'est produite";
+      }
+    } catch (error) {
+      inspect(error);
+    }
   }
 
   Future<List<Map<dynamic, dynamic>>> getUserServices(String id) async {
@@ -246,8 +298,6 @@ class ServyBackend {
   Future<List<Map<dynamic, dynamic>>> getCommandes() async {
     try {
       final response = await uno.get("/users/listcommandes");
-
-      inspect(response.data["commandes"]);
       return List<Map<dynamic, dynamic>>.from(response.data["commandes"]);
     } catch (error) {
       inspect(error);
@@ -282,7 +332,10 @@ class ServyBackend {
         if (token != null) {
           uno = Uno(
             baseURL: baseURL,
-            headers: {"Authorization": "Bearer $token"},
+            headers: {
+              "Authorization": "Bearer $token",
+              "Accept": "application/json"
+            },
           );
           final response = await uno.get("/users/servicesList");
 
