@@ -10,8 +10,8 @@ import 'package:uno/uno.dart';
 
 class ServyBackend {
   static late final ServyBackend _instance;
-  // static String baseURL = "https://viensfaireducash.com";
-  static String baseURL = "http://192.168.1.103:300";
+  static String baseURL = "https://viensfaireducash.com";
+  // static String baseURL = "http://192.168.1.103:300";
   static String basePhotodeProfilURL = "$baseURL/uploads/images/photodeprofils";
   static String basePhotodeServicesPrestataires =
       "$baseURL/uploads/images/servicesprestataires";
