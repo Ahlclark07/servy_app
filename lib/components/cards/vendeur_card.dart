@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/pages/page_profil.dart';
@@ -27,12 +28,12 @@ class VendeurCard extends StatelessWidget {
           BoxShadow(
             color: Colors.grey.shade200,
             offset: const Offset(1, 0),
-            blurRadius: 0,
+            blurRadius: 1,
             spreadRadius: 1,
           ),
           BoxShadow(
               color: Colors.grey.shade200,
-              spreadRadius: .5,
+              spreadRadius: 3,
               blurRadius: 1,
               offset: const Offset(1, 1))
         ]),
@@ -43,7 +44,7 @@ class VendeurCard extends StatelessWidget {
               height: 130,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: NetworkImage(
+                    image: CachedNetworkImageProvider(
                         "${ServyBackend.basePhotodeProfilURL}/${vendeur["photoDeProfil"]}"),
                     fit: BoxFit.cover),
                 borderRadius: BorderRadius.circular(15),

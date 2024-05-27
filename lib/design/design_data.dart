@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class Palette {
   static Color primary = Colors.black;
   static Color background = Colors.white;
-  static Color blue = const Color(0xFF0009E5);
+  static Color blue = Color.fromARGB(255, 255, 187, 0);
   static Color cendre = Colors.grey;
   static Color inputBackground = const Color(0xFFF1F1F1);
 }
@@ -16,15 +16,18 @@ class Design {
       iconColor: Palette.blue,
       contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0));
   static ThemeData themeData = ThemeData(
+      bottomNavigationBarTheme:
+          BottomNavigationBarThemeData(backgroundColor: Palette.background),
+      scaffoldBackgroundColor: Palette.background,
       snackBarTheme: SnackBarThemeData(
         backgroundColor: Palette.blue,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-              overlayColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
+              overlayColor: WidgetStateProperty.resolveWith<Color>(
+                (Set<WidgetState> states) {
                   // Ajoute un clignotement blanc lorsque le bouton est pressé
-                  if (states.contains(MaterialState.pressed)) {
+                  if (states.contains(WidgetState.pressed)) {
                     return Colors.white
                         .withOpacity(0.4); // Opacité du clignotement
                   }
@@ -32,7 +35,7 @@ class Design {
                 },
               ),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap, //
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   side: BorderSide(color: Palette.primary, width: 0),
                   borderRadius: BorderRadius.circular(
@@ -40,13 +43,13 @@ class Design {
                 ),
               ),
               foregroundColor:
-                  MaterialStatePropertyAll<Color>(Palette.background),
-              backgroundColor: MaterialStatePropertyAll<Color>(Palette.blue))),
+                  WidgetStatePropertyAll<Color>(Palette.background),
+              backgroundColor: WidgetStatePropertyAll<Color>(Palette.blue))),
       useMaterial3: true,
       inputDecorationTheme: InputDecorationTheme(
           fillColor: Palette.cendre, border: InputBorder.none),
       primaryColor: Palette.primary,
-      textTheme: GoogleFonts.montserratTextTheme()
+      textTheme: GoogleFonts.aBeeZeeTextTheme()
           .apply(displayColor: Palette.blue, bodyColor: Palette.primary),
       appBarTheme:
           AppBarTheme(backgroundColor: Palette.background, elevation: 0),
@@ -54,16 +57,16 @@ class Design {
           backgroundColor: Palette.blue, foregroundColor: Palette.background),
       outlinedButtonTheme: OutlinedButtonThemeData(
           style: ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   side: BorderSide(color: Palette.primary, width: 6),
                   borderRadius: BorderRadius.circular(
                       10.0), // Ajuste le rayon pour obtenir des bords légèrement arrondis
                 ),
               ),
-              padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+              padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(
                   EdgeInsets.all(17)),
-              backgroundColor: MaterialStatePropertyAll<Color>(Palette.primary),
+              backgroundColor: WidgetStatePropertyAll<Color>(Palette.primary),
               foregroundColor:
-                  MaterialStatePropertyAll<Color>(Palette.background))));
+                  WidgetStatePropertyAll<Color>(Palette.background))));
 }

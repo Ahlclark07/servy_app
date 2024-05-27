@@ -7,26 +7,36 @@ import 'package:servy_app/utils/auth_service.dart';
 import '../components/forms/custom_password_field.dart';
 import '../components/forms/custom_text_field.dart';
 
-class PageInscription extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController mdpController = TextEditingController();
-  final TextEditingController mdpConfirmController = TextEditingController();
-  final language = "fr";
-  PageInscription({super.key});
+class PageInscription extends StatefulWidget {
+  const PageInscription({super.key});
 
+  @override
+  State<PageInscription> createState() => _PageInscriptionState();
+}
+
+class _PageInscriptionState extends State<PageInscription> {
+  final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController mdpController = TextEditingController();
+
+  final TextEditingController mdpConfirmController = TextEditingController();
+  bool formulaireSoumis = false;
+  final language = "fr";
+  final _formkey = GlobalKey<FormBuilderState>();
   @override
   Widget build(BuildContext context) {
     // final textes = language =="fr" ? FrLanguageData.contenuPageInscription : null;
+
     const textes = FrLanguageData.contenuPageInscription;
     final screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          width: screenSize.width,
-          height: screenSize.height,
           child: FormBuilder(
+            key: _formkey,
             child: Column(
               children: [
                 Text(
@@ -65,28 +75,56 @@ class PageInscription extends StatelessWidget {
                   height: 40,
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    emailController.value.composing.isValid;
-                    final message = await AuthService().registration(
-                      email: emailController.text,
-                      password: mdpController.text,
-                    );
-                    if (message!.contains('Success')) {
-                      Navigator.of(context)
-                          .pushReplacementNamed("/remplirProfil");
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(message),
-                      ),
-                    );
-                  },
-                  child: SizedBox(
-                      width: screenSize.width - 60,
-                      child: const Text(
-                        InscriptionText.actionButton,
-                        textAlign: TextAlign.center,
-                      )),
+                  onPressed: formulaireSoumis
+                      ? null
+                      : () async {
+                          if (_formkey.currentState!.isValid) {
+                            try {
+                              setState(() {
+                                formulaireSoumis = true;
+                              });
+                              final message = await AuthService().registration(
+                                email: emailController.text,
+                                password: mdpController.text,
+                              );
+                              if (message!.contains('Success')) {
+                                Navigator.of(context)
+                                    .pushReplacementNamed("/remplirProfil");
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(message),
+                                ),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Une erreur est survenue"),
+                                ),
+                              );
+                            }
+                            setState(() {
+                              formulaireSoumis = false;
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Validez tous les champs requis"),
+                            ));
+                          }
+                        },
+                  child: formulaireSoumis
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Palette.background,
+                          ),
+                        )
+                      : SizedBox(
+                          width: screenSize.width - 60,
+                          child: const Text(
+                            InscriptionText.actionButton,
+                            textAlign: TextAlign.center,
+                          )),
                 ),
                 const SizedBox(
                   height: 40,

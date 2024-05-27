@@ -24,7 +24,7 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
-
+ 
 android {
     namespace "com.example.servy_app"
     compileSdk 34
@@ -33,7 +33,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+  lintOptions {
+        warning 'deprecation'
+    }
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -51,6 +53,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+      
     }
 
     buildTypes {
@@ -65,5 +68,3 @@ android {
 flutter {
     source '../..'
 }
-
-dependencies {}

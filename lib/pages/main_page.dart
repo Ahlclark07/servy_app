@@ -1,10 +1,14 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:servy_app/pages/innerpages/accueil_inner_page.dart';
 import 'package:servy_app/pages/innerpages/chat_inner_page.dart';
 import 'package:servy_app/pages/innerpages/profil_inner_page.dart';
 import 'package:servy_app/pages/innerpages/recherche_inner_page.dart';
 import 'package:servy_app/utils/servy_backend.dart';
+import 'package:shake/shake.dart';
+// import 'package:shake_gesture/shake_gesture.dart';
 import '../components/appbars/accueil_app_bar.dart';
 
 class MainPage extends StatefulWidget {
@@ -25,6 +29,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+
     queryNotifier = ValueNotifier<String>('');
   }
 
@@ -36,6 +41,15 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    try {
+      ShakeDetector.autoStart(onPhoneShake: () {
+        inspect("ca secoue ooh");
+      });
+    } on MissingPluginException catch (e) {
+      inspect(e);
+    } catch (e) {
+      inspect(e);
+    }
     return Scaffold(
       floatingActionButton: pageActuelle == 3 &&
               ServyBackend().user["role"] != "client"

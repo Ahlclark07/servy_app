@@ -8,6 +8,7 @@ import 'package:servy_app/components/buttons/ask_for_file_button.dart';
 import 'package:servy_app/components/forms/customSelectField.dart';
 import 'package:servy_app/components/forms/custom_text_field.dart';
 import 'package:servy_app/components/forms/materiau_form.dart';
+import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 
@@ -30,6 +31,7 @@ class _PageCreationServiceState extends State<PageCreationService> {
 
   final recorder = FlutterSoundRecorder();
   final _formKey = GlobalKey<FormBuilderState>();
+  bool formulaireSoumis = false;
   @override
   void initState() {
     super.initState();
@@ -54,7 +56,7 @@ class _PageCreationServiceState extends State<PageCreationService> {
   Future initRecorder() async {
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      throw ("Exception, microphone non permi par le user");
+      return;
     }
 
     await recorder.openRecorder();
@@ -163,12 +165,16 @@ class _PageCreationServiceState extends State<PageCreationService> {
                               builder: (context, value) {
                                 return ElevatedButton(
                                     onPressed: () async {
-                                      if (recorder.isRecording) {
-                                        await stop();
-                                        await recorder.getRecordURL(
-                                            path: "audio");
-                                      } else {
-                                        await record();
+                                      try {
+                                        if (recorder.isRecording) {
+                                          await stop();
+                                          await recorder.getRecordURL(
+                                              path: "audio");
+                                        } else {
+                                          await record();
+                                        }
+                                      } catch (e) {
+                                        await initRecorder();
                                       }
                                       setState(() {});
                                     },
@@ -230,37 +236,54 @@ class _PageCreationServiceState extends State<PageCreationService> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.isValid) {
-                      final response = await ServyBackend()
-                          .createServicePrestataire(
-                              photos: photos,
-                              service: service,
-                              tarif: tarifController.text,
-                              delai: delaiController.text,
-                              audio: audio,
-                              desc: descController.text,
-                              materiels: materiels);
+                  onPressed: formulaireSoumis
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.isValid) {
+                            setState(() {
+                              formulaireSoumis = true;
+                            });
+                            final response = await ServyBackend()
+                                .createServicePrestataire(
+                                    photos: photos,
+                                    service: service,
+                                    tarif: tarifController.text,
+                                    delai: delaiController.text,
+                                    audio: audio,
+                                    desc: descController.text,
+                                    materiels: materiels);
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("${response[0]} ${response[1]}"),
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("${response[0]} ${response[1]}"),
+                              ),
+                            );
+                            setState(() {
+                              formulaireSoumis = false;
+                            });
+                            Navigator.of(context).pop();
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Remplissez les champs requis"),
+                              ),
+                            );
+                          }
+                        },
+                  child: formulaireSoumis
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Palette.background,
+                          ),
+                        )
+                      : const Text(
+                          "Confirmer la création",
+                          textAlign: TextAlign.center,
                         ),
-                      );
-                      Navigator.of(context).pop();
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Remplissez les champs requis"),
-                        ),
-                      );
-                    }
-                  },
-                  child: const Text(
-                    "Confirmer la création",
-                    textAlign: TextAlign.center,
-                  ),
                 ),
+                const SizedBox(
+                  height: 30,
+                )
               ],
             ),
           ),

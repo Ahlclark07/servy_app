@@ -21,6 +21,8 @@ class ServyBackend {
   static const String success = "success";
   bool enTransition = false;
   Map<String, dynamic> user = {};
+  List<Map<dynamic, dynamic>> serviceList = [];
+  List<Map<dynamic, dynamic>> vendeurList = [];
   Uno uno = Uno(
     baseURL: baseURL,
   );
@@ -349,9 +351,13 @@ class ServyBackend {
 
   Future<List<Map<dynamic, dynamic>>> getListOfVendeurs() async {
     try {
-      final response = await uno.get("/users/vendeursList");
+      if (vendeurList.isEmpty) {
+        final response = await uno.get("/users/vendeursList");
+        vendeurList =
+            List<Map<dynamic, dynamic>>.from(response.data["vendeurs"]);
+      }
 
-      return List<Map<dynamic, dynamic>>.from(response.data["vendeurs"]);
+      return vendeurList;
     } on UnoError catch (error) {
       inspect(error);
       return [];
@@ -360,9 +366,12 @@ class ServyBackend {
 
   Future<List<Map<dynamic, dynamic>>> getListOfServicesPrestataires() async {
     try {
-      final response = await uno.get("/users/servicesPrestatairesList");
-
-      return List<Map<dynamic, dynamic>>.from(response.data["services"]);
+      if (serviceList.isEmpty) {
+        final response = await uno.get("/users/servicesPrestatairesList");
+        serviceList =
+            List<Map<dynamic, dynamic>>.from(response.data["services"]);
+      }
+      return serviceList;
     } on UnoError catch (error) {
       inspect(error);
       return [];

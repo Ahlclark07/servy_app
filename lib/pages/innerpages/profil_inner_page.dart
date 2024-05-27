@@ -1,5 +1,7 @@
+import 'dart:developer';
 
 import 'package:async_builder/async_builder.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:servy_app/components/buttons/refresh_button.dart';
 import 'package:servy_app/components/cards/service_card.dart';
@@ -16,12 +18,15 @@ class ProfilInnerPage extends StatefulWidget {
 class _ProfilInnerPageState extends State<ProfilInnerPage> {
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: AsyncBuilder(
           future: ServyBackend().getConnectedUser(),
           waiting: (context) => const CircularProgressIndicator(),
           builder: (context, user) {
+            inspect(user);
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -35,53 +40,78 @@ class _ProfilInnerPageState extends State<ProfilInnerPage> {
                       height: 80,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: NetworkImage(
+                              image: CachedNetworkImageProvider(
                                   "${ServyBackend.basePhotodeProfilURL}/${user?["photoDeProfil"]}")),
                           borderRadius: BorderRadius.circular(50)),
                     ),
                     const SizedBox(
                       width: 15,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      verticalDirection: VerticalDirection.down,
-                      children: [
-                        Text(
-                          "${user?["nom_complet"]}, ${user?["profession"] ?? "particulier"}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "${user!["role"]} ${user["enTransition"] ? "(en transition)" : ""}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayLarge
-                              ?.copyWith(
-                                  fontSize: 18, fontWeight: FontWeight.w800),
-                        ),
-                        SizedBox(
-                          width: 200,
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  user["adresses"][0]["show_address"],
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          color: Palette.cendre,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            ],
+                    SizedBox(
+                      width: screenWidth * .5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        verticalDirection: VerticalDirection.down,
+                        children: [
+                          Text(
+                            "${user?["nom_complet"]}, ${user?["profession"] ?? "particulier"}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
-                        )
-                      ],
+                          Text(
+                            "${user!["role"]} ${user["enTransition"] ? "(en transition)" : ""}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                    fontSize: 18, fontWeight: FontWeight.w800),
+                          ),
+                          SizedBox(
+                            width: 200,
+                            child: Flex(
+                              direction: Axis.horizontal,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    user["adresses"][0]["show_address"],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                            color: Palette.cendre,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          user["portefeuille"] != null
+                              ? SizedBox(
+                                  width: 200,
+                                  child: Flex(
+                                    direction: Axis.horizontal,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          "Portefeuille : ${user["portefeuille"]["montant"]} FCFA",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                  color: Palette.cendre,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Container(),
+                        ],
+                      ),
                     ),
                     RefreshButton(callback: () => setState(() {}))
                   ],
@@ -161,7 +191,7 @@ class _ProfilInnerPageState extends State<ProfilInnerPage> {
                     builder: (context, list) {
                       if (list!.isEmpty) {
                         return const Center(
-                            child: Text("Aucun service pour le moment"));
+                            child: Text("Aucune commande pour le moment"));
                       }
                       return Column(
                         children: [

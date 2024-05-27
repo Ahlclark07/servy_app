@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:servy_app/design/design_data.dart';
 
 class TabulationButton extends StatefulWidget {
   final void Function() onPressed;
@@ -38,6 +39,9 @@ class _TabulationButtonState extends State<TabulationButton>
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      padding: const EdgeInsets.all(0),
+      color: Palette.blue,
+      constraints: BoxConstraints(maxWidth: 10, maxHeight: 10),
       onPressed: () {
         _toggleRotation();
         widget.onPressed();

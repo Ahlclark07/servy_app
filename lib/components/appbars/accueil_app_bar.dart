@@ -1,4 +1,5 @@
 import 'package:async_builder/async_builder.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:servy_app/components/search_bar.dart';
@@ -19,6 +20,7 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      color: Palette.background,
       child: AsyncBuilder(
           future: ServyBackend().getConnectedUser(),
           waiting: (context) =>
@@ -56,7 +58,7 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
                     user?["nom_complet"],
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Palette.cendre,
-                        fontSize: 20,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500),
                   )
                 ],
@@ -67,11 +69,11 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
                     callBack();
                   },
                   child: Container(
-                    width: 60,
-                    height: 60,
+                    width: 50,
+                    height: 50,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: NetworkImage(
+                            image: CachedNetworkImageProvider(
                                 "${ServyBackend.basePhotodeProfilURL}/${user?["photoDeProfil"]}")),
                         borderRadius: BorderRadius.circular(12)),
                   ),

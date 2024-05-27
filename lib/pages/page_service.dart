@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -21,14 +22,30 @@ class PageService extends StatelessWidget {
   }
 
   const PageService({super.key, required this.service, required this.vendeur});
+  String _getDistance() {
+    final LatLng parseCoordinates =
+        _parseCoordinates(vendeur["adresses"][0]["localisationMap"]);
+    final LatLng parseCoordinatesUser = _parseCoordinates(
+        ServyBackend().user["adresses"][0]["localisationMap"]);
+    final value = Geolocator.distanceBetween(
+            parseCoordinates.latitude,
+            parseCoordinates.longitude,
+            parseCoordinatesUser.latitude,
+            parseCoordinatesUser.longitude)
+        .truncate();
+    late final message;
+    if (value > 1000) {
+      message = "${value / 1000}km";
+    } else {
+      message = "${value}m";
+    }
+    return message;
+  }
+
   @override
   Widget build(BuildContext context) {
     final images = service["images"];
     final width = MediaQuery.of(context).size.width;
-    LatLng parseCoordinates =
-        _parseCoordinates(vendeur["adresses"][0]["localisationMap"]);
-    LatLng parseCoordinatesUser = _parseCoordinates(
-        ServyBackend().user["adresses"][0]["localisationMap"]);
     return Scaffold(
       bottomNavigationBar: Container(
         color: Palette.blue,
@@ -68,8 +85,8 @@ class PageService extends StatelessWidget {
                         .style
                         ?.copyWith(
                             foregroundColor:
-                                MaterialStatePropertyAll(Palette.blue),
-                            backgroundColor: MaterialStatePropertyAll<Color>(
+                                WidgetStatePropertyAll(Palette.blue),
+                            backgroundColor: WidgetStatePropertyAll<Color>(
                                 Palette.background)),
                     child: const Text("Commander"),
                   )
@@ -95,11 +112,16 @@ class PageService extends StatelessWidget {
                   children: [
                     FlutterCarousel(
                         items: [
-                          ...List<Image>.generate(
+                          ...List<CachedNetworkImage>.generate(
                               images.length,
-                              (index) => Image.network(
+                              (index) => CachedNetworkImage(
                                   fit: BoxFit.cover,
-                                  "${ServyBackend.basePhotodeServicesPrestataires}/${images[index]}")),
+                                  placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                  imageUrl:
+                                      "${ServyBackend.basePhotodeServicesPrestataires}/${images[index]}")),
                         ],
                         options: CarouselOptions(
                             height: 200, viewportFraction: 1, autoPlay: true)),
@@ -114,7 +136,7 @@ class PageService extends StatelessWidget {
                                       vendeur: vendeur,
                                     ))),
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(
+                          backgroundImage: CachedNetworkImageProvider(
                               "${ServyBackend.basePhotodeProfilURL}/${vendeur["photoDeProfil"]}"),
                           radius: 60,
                         ),
@@ -195,7 +217,7 @@ class PageService extends StatelessWidget {
                             margin: const EdgeInsets.only(right: 10),
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: NetworkImage(
+                                  image: CachedNetworkImageProvider(
                                       "${ServyBackend.basePhotodeMateriau}/${service["materiaux"][index]["image"]}")),
                             ),
                           ),
@@ -232,8 +254,7 @@ class PageService extends StatelessWidget {
                   ),
                 )
               : Container(),
-          Text(
-              "Distance de vous : ${Geolocator.distanceBetween(parseCoordinates.latitude, parseCoordinates.longitude, parseCoordinatesUser.latitude, parseCoordinatesUser.longitude)}m"),
+          Text("Distance de vous : ${_getDistance()}"),
           const SizedBox(
             height: 30,
           )

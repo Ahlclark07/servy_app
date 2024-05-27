@@ -20,6 +20,8 @@ class _PageDevenirVendeurState extends State<PageDevenirVendeur> {
   late final File photoDeProfil;
 
   late final File carteId;
+  bool formulaireSoumis = false;
+  final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class _PageDevenirVendeurState extends State<PageDevenirVendeur> {
           width: screenSize.width,
           height: screenSize.height,
           child: FormBuilder(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -82,32 +85,68 @@ class _PageDevenirVendeurState extends State<PageDevenirVendeur> {
                   height: 40,
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    final message = await ServyBackend().becomeSeller(
-                        profession: professionController.text,
-                        photo: photoDeProfil,
-                        carte: carteId);
-                    String texte;
-                    if (message == ServyBackend.success) {
-                      Navigator.of(context).popAndPushNamed("/main");
-                      texte =
-                          "Votre demande a été soumise et est en cours d'approbation";
-                    } else {
-                      texte = message;
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(texte),
-                      ),
-                    );
-                  },
+                  onPressed: formulaireSoumis
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.isValid) {
+                            setState(() {
+                              formulaireSoumis = true;
+                            });
+                            try {
+                              final message = await ServyBackend().becomeSeller(
+                                  profession: professionController.text,
+                                  photo: photoDeProfil,
+                                  carte: carteId);
+                              String texte;
+                              if (message == ServyBackend.success) {
+                                Navigator.of(context).popAndPushNamed("/main");
+                                texte =
+                                    "Votre demande a été soumise et est en cours d'approbation";
+                              } else {
+                                texte = message;
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(texte),
+                                ),
+                              );
+                              setState(() {
+                                formulaireSoumis = false;
+                              });
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      "Assurez vous d'avoir jouté les photos requises"),
+                                ),
+                              );
+                              setState(() {
+                                formulaireSoumis = false;
+                              });
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text("Veuillez remplir tous les champs"),
+                              ),
+                            );
+                          }
+                        },
                   child: SizedBox(
                       width: screenSize.width - 60,
-                      child: const Text(
-                        "Soumettre la demande",
-                        textAlign: TextAlign.center,
-                      )),
+                      child: formulaireSoumis
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : const Text(
+                              "Soumettre la demande",
+                              textAlign: TextAlign.center,
+                            )),
                 ),
+                const SizedBox(
+                  height: 20,
+                )
               ],
             ),
           ),

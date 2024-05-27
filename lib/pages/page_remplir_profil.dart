@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:servy_app/components/buttons/ask_for_localisation_button.dart';
 import 'package:servy_app/components/forms/customDateField.dart';
 import 'package:servy_app/components/forms/customSelectField.dart';
+import 'package:servy_app/design/design_data.dart';
 
 import 'package:servy_app/utils/servy_backend.dart';
 import '../components/forms/custom_text_field.dart';
@@ -23,6 +24,7 @@ class _PageRemplirProfilState extends State<PageRemplirProfil> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController numeroController = TextEditingController();
 
+  bool formulaireSoumis = false;
   String departementValue = "";
 
   String villeValue = "";
@@ -147,41 +149,65 @@ class _PageRemplirProfilState extends State<PageRemplirProfil> {
                   height: 40,
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.isValid) {
-                      final message = await ServyBackend().remplirProfil(
-                          nom: nomController.value.text,
-                          prenoms: prenomController.value.text,
-                          departement: departementValue,
-                          date: dateController.value.text,
-                          ville: villeValue,
-                          quartier: quartierValue,
-                          pos: currentPosition,
-                          telephone: numeroController.text);
-                      String texte;
-                      if (message == ServyBackend.success) {
-                        Navigator.of(context).popAndPushNamed("/main");
-                        texte = "Bienvenu ${nomController.text}";
-                      } else {
-                        texte = message;
-                      }
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(texte),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Validez tous les champs requis"),
-                      ));
-                    }
-                  },
-                  child: SizedBox(
-                      width: screenSize.width - 60,
-                      child: const Text(
-                        "Accéder à l'application",
-                        textAlign: TextAlign.center,
-                      )),
+                  onPressed: formulaireSoumis
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.isValid) {
+                            try {
+                              setState(() {
+                                formulaireSoumis = true;
+                              });
+                              final message = await ServyBackend()
+                                  .remplirProfil(
+                                      nom: nomController.value.text,
+                                      prenoms: prenomController.value.text,
+                                      departement: departementValue,
+                                      date: dateController.value.text,
+                                      ville: villeValue,
+                                      quartier: quartierValue,
+                                      pos: currentPosition,
+                                      telephone: numeroController.text);
+                              String texte;
+                              if (message == ServyBackend.success) {
+                                Navigator.of(context).popAndPushNamed("/main");
+                                texte = "Bienvenu ${nomController.text}";
+                              } else {
+                                texte = message;
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(texte),
+                                ),
+                              );
+                            } catch (error) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content:
+                                    Text("Veuillez fournir votre localisation"),
+                              ));
+                            }
+                            setState(() {
+                              formulaireSoumis = false;
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Validez tous les champs requis"),
+                            ));
+                          }
+                        },
+                  child: formulaireSoumis
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Palette.background,
+                          ),
+                        )
+                      : SizedBox(
+                          width: screenSize.width - 60,
+                          child: const Text(
+                            "Accéder à l'application",
+                            textAlign: TextAlign.center,
+                          )),
                 ),
                 const SizedBox(
                   height: 20,

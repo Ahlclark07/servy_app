@@ -1,5 +1,5 @@
-
 import 'package:async_builder/async_builder.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:servy_app/components/cards/service_card.dart';
 import 'package:servy_app/design/design_data.dart';
@@ -38,7 +38,7 @@ class PageProfil extends StatelessWidget {
                         bottom: 0,
                         left: 10,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(
+                          backgroundImage: CachedNetworkImageProvider(
                               "${ServyBackend.basePhotodeProfilURL}/${vendeur["photoDeProfil"]}"),
                           radius: 60,
                         ),
@@ -71,12 +71,14 @@ class PageProfil extends StatelessWidget {
                   }
                   return Column(
                     children: [
-                      ...List<ServiceCard>.generate(
+                      ...List<Widget>.generate(
                           services.length,
-                          ((index) => ServiceCard(
-                              vendeur: vendeur,
-                              service: services[index],
-                              onChange: () {}))),
+                          ((index) => services[index]["verifie"] != "En attente"
+                              ? ServiceCard(
+                                  vendeur: vendeur,
+                                  service: services[index],
+                                  onChange: () {})
+                              : Container())),
                     ],
                   );
                 }),

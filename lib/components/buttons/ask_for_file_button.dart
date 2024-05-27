@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:async_button_builder/async_button_builder.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:servy_app/design/design_data.dart';
 
 class AskForFile extends StatefulWidget {
@@ -23,21 +25,36 @@ class AskForFile extends StatefulWidget {
 class _AskForFileState extends State<AskForFile> {
   bool fileSubmitted = false;
   List<File> files = [];
+  Future<void> _askForFileMethod() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+
+      widget.callback(file);
+      setState(() {
+        fileSubmitted = true;
+        files.add(file);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AsyncButtonBuilder(
         child: const Icon(Icons.add),
         onPressed: () async {
-          FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-          if (result != null) {
-            File file = File(result.files.single.path!);
-
-            widget.callback(file);
-            setState(() {
-              fileSubmitted = true;
-              files.add(file);
-            });
+          try {
+            await _askForFileMethod();
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                    "Veuillez permettre l'utilisation du stockage dans les paramètres"),
+              ),
+            );
+            await Future.delayed(const Duration(seconds: 1));
+            Geolocator.openAppSettings();
           }
         },
         builder: (context, child, callback, state) {

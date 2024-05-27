@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -11,6 +12,7 @@ import 'package:servy_app/pages/page_intro.dart';
 import 'package:servy_app/pages/page_remplir_profil.dart';
 import 'package:servy_app/static_test/fr.dart';
 import "package:firebase_core/firebase_core.dart";
+import 'package:servy_app/utils/android_5_fix.dart';
 import 'package:servy_app/utils/auth_service.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
@@ -18,6 +20,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   ServyBackend.initialize();
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -38,13 +41,13 @@ class MyApp extends StatelessWidget {
       title: AppText.titre,
       theme: Design.themeData,
       initialRoute:
-          //  "/creerService",
+          //  "/remplirProfil",
           AuthService().currentUser != null ? "/main" : "/intro",
       routes: {
         "/intro": (context) => const PageIntro(),
-        "/inscription": (context) => PageInscription(),
+        "/inscription": (context) => const PageInscription(),
         "/remplirProfil": (context) => const PageRemplirProfil(),
-        "/connexion": (context) => PageConnexion(),
+        "/connexion": (context) => const PageConnexion(),
         "/mdp_oublié": (context) => Container(),
         "/page_recherche": (context) => Container(),
         "/main": (context) => const MainPage(),

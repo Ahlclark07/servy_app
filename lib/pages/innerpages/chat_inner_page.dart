@@ -1,4 +1,5 @@
 import 'package:async_builder/async_builder.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -17,7 +18,7 @@ class ChatInnerPage extends StatelessWidget {
       waiting: (context) => const Center(child: CircularProgressIndicator()),
       builder: (context, data) {
         if (data == null || data.isEmpty) {
-          return const Center(child: Text('No conversations'));
+          return const Center(child: Text('Pas de conversations'));
         }
         return Column(
           children: [
@@ -34,7 +35,7 @@ class ChatInnerPage extends StatelessWidget {
                           child: Row(
                             children: [
                               CircleAvatar(
-                                backgroundImage: NetworkImage(
+                                backgroundImage: CachedNetworkImageProvider(
                                     "${ServyBackend.basePhotodeProfilURL}/${data[index].metadata?["imageUrl"] ?? "1715124451532-bracelet.jpeg"}"),
                                 radius: 60,
                               ),

@@ -1,4 +1,6 @@
+import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
@@ -35,6 +37,8 @@ class _ServiceCardState extends State<ServiceCard> {
         : widget.service["verifie"] == "refuse"
             ? Colors.red
             : Palette.blue;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () => Navigator.push(
           context,
@@ -44,7 +48,8 @@ class _ServiceCardState extends State<ServiceCard> {
                     service: widget.service,
                   ))),
       child: Container(
-        width: 750,
+        width: screenWidth,
+        // width: screenWidth - 30 > 750 ? 750 : screenWidth - 30,
         margin: const EdgeInsets.symmetric(vertical: 10),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(color: Palette.background, boxShadow: [
@@ -65,10 +70,15 @@ class _ServiceCardState extends State<ServiceCard> {
             Stack(
               children: [
                 FlutterCarousel(items: [
-                  ...List<Image>.generate(
+                  ...List<CachedNetworkImage>.generate(
                       images.length,
-                      (index) => Image.network(
-                          "${ServyBackend.basePhotodeServicesPrestataires}/${images[index]}")),
+                      (index) => CachedNetworkImage(
+                          placeholder: (context, url) =>
+                              const Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                          imageUrl:
+                              "${ServyBackend.basePhotodeServicesPrestataires}/${images[index]}")),
                 ], options: CarouselOptions(height: 200, viewportFraction: 1)),
                 Positioned(
                     bottom: 10,
@@ -86,66 +96,74 @@ class _ServiceCardState extends State<ServiceCard> {
                     ))
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            "${ServyBackend.basePhotodeProfilURL}/${widget.vendeur["photoDeProfil"]}"),
-                        fit: BoxFit.cover),
-                    borderRadius: BorderRadius.circular(15),
+            SizedBox(
+              width: screenWidth - 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    margin: const EdgeInsets.only(right: 10),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                              "${ServyBackend.basePhotodeProfilURL}/${widget.vendeur["photoDeProfil"]}"),
+                          fit: BoxFit.cover),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 200,
-                      child: Flex(
-                        direction: Axis.horizontal,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              "${widget.service['service']["nom"]} pour ${widget.service["tarif"]} FCFA",
-                              maxLines: 2,
-                              softWrap: true,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13),
-                            ),
+                  SizedBox(
+                    width: screenWidth / 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: screenWidth / 2,
+                          // width: 200,
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "${widget.service['service']["nom"]} pour ${widget.service["tarif"]} FCFA",
+                                  maxLines: 2,
+                                  softWrap: true,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "${widget.vendeur["nom_complet"]}, ${widget.vendeur["profession"]}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium
+                              ?.copyWith(fontSize: 10),
+                        ),
+                      ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "${widget.vendeur["nom_complet"]}, ${widget.vendeur["profession"]}",
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayMedium
-                          ?.copyWith(fontSize: 10),
-                    ),
-                  ],
-                ),
-                TabulationButton(
-                  onPressed: () {
-                    widget.onChange();
-                    setState(() {
-                      isAudioActive = !isAudioActive;
-                    });
-                  },
-                )
-              ],
+                  ),
+                  TabulationButton(
+                    onPressed: () {
+                      widget.onChange();
+                      setState(() {
+                        isAudioActive = !isAudioActive;
+                      });
+                    },
+                  )
+                ],
+              ),
             ),
             Container(
               margin: const EdgeInsets.only(top: 10),
