@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:servy_app/utils/auth_service.dart';
 import 'package:uno/uno.dart';
 
@@ -217,6 +218,7 @@ class ServyBackend {
     if (user.isNotEmpty) return user;
 
     try {
+      inspect("Requete lancée");
       final response = await uno.get("/users/getUser");
 
       user = response.data["user"];
@@ -353,6 +355,21 @@ class ServyBackend {
     try {
       if (vendeurList.isEmpty) {
         final response = await uno.get("/users/vendeursList");
+        vendeurList =
+            List<Map<dynamic, dynamic>>.from(response.data["vendeurs"]);
+      }
+
+      return vendeurList;
+    } on UnoError catch (error) {
+      inspect(error);
+      return [];
+    }
+  }
+
+  Future<List<Map<dynamic, dynamic>>> getListOfCloseVendeurs() async {
+    try {
+      if (vendeurList.isEmpty) {
+        final response = await uno.get("/users/vendeursProches");
         vendeurList =
             List<Map<dynamic, dynamic>>.from(response.data["vendeurs"]);
       }

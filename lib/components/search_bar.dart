@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:servy_app/design/design_data.dart';
 
 class HomeSearchBar extends StatelessWidget implements PreferredSizeWidget {
@@ -12,8 +13,8 @@ class HomeSearchBar extends StatelessWidget implements PreferredSizeWidget {
         controller: controller,
         autoFocus: true,
         hintText: "Rechercher un service ou un vendeur",
-        elevation: const MaterialStatePropertyAll<double>(1),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        elevation: const WidgetStatePropertyAll<double>(1),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             side: const BorderSide(color: Colors.transparent, width: 0),
             borderRadius: BorderRadius.circular(10.0),
@@ -41,7 +42,7 @@ class HomeSearchBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             );
           },
-        ));
+        )).animate().moveY(begin: 150);
   }
 
   @override

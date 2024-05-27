@@ -33,7 +33,7 @@ class PageService extends StatelessWidget {
             parseCoordinatesUser.latitude,
             parseCoordinatesUser.longitude)
         .truncate();
-    late final message;
+    late final String message;
     if (value > 1000) {
       message = "${value / 1000}km";
     } else {
@@ -226,7 +226,7 @@ class PageService extends StatelessWidget {
                           Container(
                             color: Palette.background,
                             child: Text(
-                                service["materiaux"][index]["prix"].toString()),
+                                "${service["materiaux"][index]["prix"]} FCFA"),
                           )
                         ],
                       )),

@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class Palette {
   static Color primary = Colors.black;
   static Color background = Colors.white;
-  static Color blue = Color.fromARGB(255, 255, 187, 0);
+  static Color blue = const Color(0xFF2196F3);
   static Color cendre = Colors.grey;
   static Color inputBackground = const Color(0xFFF1F1F1);
 }
@@ -16,8 +16,8 @@ class Design {
       iconColor: Palette.blue,
       contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0));
   static ThemeData themeData = ThemeData(
-      bottomNavigationBarTheme:
-          BottomNavigationBarThemeData(backgroundColor: Palette.background),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Palette.background, selectedItemColor: Palette.blue),
       scaffoldBackgroundColor: Palette.background,
       snackBarTheme: SnackBarThemeData(
         backgroundColor: Palette.blue,
@@ -49,7 +49,7 @@ class Design {
       inputDecorationTheme: InputDecorationTheme(
           fillColor: Palette.cendre, border: InputBorder.none),
       primaryColor: Palette.primary,
-      textTheme: GoogleFonts.aBeeZeeTextTheme()
+      textTheme: GoogleFonts.openSansTextTheme()
           .apply(displayColor: Palette.blue, bodyColor: Palette.primary),
       appBarTheme:
           AppBarTheme(backgroundColor: Palette.background, elevation: 0),

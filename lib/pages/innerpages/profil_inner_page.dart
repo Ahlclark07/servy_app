@@ -26,7 +26,6 @@ class _ProfilInnerPageState extends State<ProfilInnerPage> {
           future: ServyBackend().getConnectedUser(),
           waiting: (context) => const CircularProgressIndicator(),
           builder: (context, user) {
-            inspect(user);
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -21,6 +21,7 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
   bool shouldAutoPlay = true;
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -76,11 +77,10 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
                         items: List<VendeurCard>.generate(users.length,
                             (index) => VendeurCard(vendeur: users[index])),
                         options: CarouselOptions(
-                          initialPage: 3,
-                          viewportFraction: 1 / 2,
+                          viewportFraction: .52,
                           showIndicator: false,
                           enableInfiniteScroll: true,
-                          height: 175,
+                          height: (width * 9 / 32) + 100,
                         ))
                     : const Text("Pas de vendeurs pour le moment sorry bro");
               }),

@@ -40,8 +40,7 @@ class _TabulationButtonState extends State<TabulationButton>
   Widget build(BuildContext context) {
     return IconButton(
       padding: const EdgeInsets.all(0),
-      color: Palette.blue,
-      constraints: BoxConstraints(maxWidth: 10, maxHeight: 10),
+      constraints: const BoxConstraints(maxWidth: 10, maxHeight: 10),
       onPressed: () {
         _toggleRotation();
         widget.onPressed();

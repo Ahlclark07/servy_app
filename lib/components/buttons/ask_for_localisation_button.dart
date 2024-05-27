@@ -29,7 +29,7 @@ class _LocalisationButtonState extends State<LocalisationButton> {
     }
 
     permission = await Geolocator.checkPermission();
-    inspect(permission);
+
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
       permission = await Geolocator.requestPermission();
@@ -49,7 +49,6 @@ class _LocalisationButtonState extends State<LocalisationButton> {
       return Future.error("GPS");
     }
 
-    inspect(await Geolocator.isLocationServiceEnabled());
     try {
       Position pos = await Geolocator.getCurrentPosition(
         forceAndroidLocationManager: true,

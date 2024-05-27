@@ -10,6 +10,7 @@ import 'package:servy_app/pages/page_creation_service.dart';
 import 'package:servy_app/pages/page_inscription.dart';
 import 'package:servy_app/pages/page_intro.dart';
 import 'package:servy_app/pages/page_remplir_profil.dart';
+import 'package:servy_app/pages/page_vendeurs_proches.dart';
 import 'package:servy_app/static_test/fr.dart';
 import "package:firebase_core/firebase_core.dart";
 import 'package:servy_app/utils/android_5_fix.dart';
@@ -41,16 +42,17 @@ class MyApp extends StatelessWidget {
       title: AppText.titre,
       theme: Design.themeData,
       initialRoute:
-          //  "/remplirProfil",
+          // "/intro",
           AuthService().currentUser != null ? "/main" : "/intro",
       routes: {
         "/intro": (context) => const PageIntro(),
+        "/connexion": (context) => const PageConnexion(),
         "/inscription": (context) => const PageInscription(),
         "/remplirProfil": (context) => const PageRemplirProfil(),
-        "/connexion": (context) => const PageConnexion(),
         "/mdp_oublié": (context) => Container(),
         "/page_recherche": (context) => Container(),
         "/main": (context) => const MainPage(),
+        "/vendeursProches": (context) => const PageVendeursProches(),
         "/devenirVendeur": (context) => const PageDevenirVendeur(),
         "/creerService": (context) => const PageCreationService(),
       },

@@ -16,7 +16,7 @@ class IntroSectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       margin: const EdgeInsets.only(top: 100, bottom: 25),
       child: Column(
         children: [
@@ -30,7 +30,7 @@ class IntroSectionCard extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .titleLarge
-                ?.copyWith(fontWeight: FontWeight.bold, fontSize: 30),
+                ?.copyWith(fontWeight: FontWeight.bold, fontSize: 27),
           ),
           const SizedBox(
             height: 15,

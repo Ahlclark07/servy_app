@@ -20,6 +20,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int pageActuelle = 0;
+  bool shaked = false;
   final pages = [
     const ChatInnerPage(),
     const ProfilInnerPage(),
@@ -42,8 +43,18 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     try {
-      ShakeDetector.autoStart(onPhoneShake: () {
-        inspect("ca secoue ooh");
+      ShakeDetector.autoStart(onPhoneShake: () async {
+        if (!shaked) {
+          setState(() {
+            shaked = true;
+          });
+          inspect("ca secoue ooh");
+          final List vendeurs = await ServyBackend().getListOfCloseVendeurs();
+          Navigator.of(context).pushNamed("/vendeursProches",
+              arguments: () => setState(() {
+                    shaked = false;
+                  }));
+        }
       });
     } on MissingPluginException catch (e) {
       inspect(e);

@@ -11,6 +11,7 @@ class InnerPageRecherche extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ValueListenableBuilder(
@@ -43,7 +44,7 @@ class InnerPageRecherche extends StatelessWidget {
                                 viewportFraction: 1 / 2,
                                 showIndicator: false,
                                 enableInfiniteScroll: true,
-                                height: 175,
+                                height: (width * 9 / 32) + 100,
                               ))
                           : const Text(
                               "Pas de vendeurs pour le moment sorry bro"),
