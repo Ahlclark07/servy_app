@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:servy_app/components/chat_page.dart';
+import 'package:servy_app/pages/chat_page.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 import 'package:servy_app/design/design_data.dart';
 

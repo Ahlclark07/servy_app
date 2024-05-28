@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:servy_app/utils/auth_service.dart';
 import 'package:uno/uno.dart';
 
@@ -392,6 +391,26 @@ class ServyBackend {
     } on UnoError catch (error) {
       inspect(error);
       return [];
+    }
+  }
+
+  Future<Map> getCommande(String id) async {
+    try {
+      final response = await uno.get("/users/getOrder/$id");
+      return response.data["commande"];
+    } on UnoError catch (error) {
+      inspect(error);
+      return {};
+    }
+  }
+
+  Future<String> annulerCommande(String id) async {
+    try {
+      await uno.patch("/users/cancelOrder/$id");
+      return "Commande annulée avec succès";
+    } on UnoError catch (error) {
+      inspect(error);
+      return "Une erreur s'est produite";
     }
   }
 }

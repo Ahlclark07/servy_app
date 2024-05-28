@@ -26,6 +26,7 @@ class _ProfilInnerPageState extends State<ProfilInnerPage> {
           future: ServyBackend().getConnectedUser(),
           waiting: (context) => const CircularProgressIndicator(),
           builder: (context, user) {
+            inspect(user);
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -95,7 +96,7 @@ class _ProfilInnerPageState extends State<ProfilInnerPage> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          "Portefeuille : ${user["portefeuille"]["montant"]} FCFA",
+                                          "Portefeuille : ${user["portefeuille"]["montant"]} FCFA (${user["portefeuille"]["montantEnAttente"]} FCFA en attente)",
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium

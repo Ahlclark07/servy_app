@@ -49,7 +49,6 @@ class _MainPageState extends State<MainPage> {
             shaked = true;
           });
           inspect("ca secoue ooh");
-          final List vendeurs = await ServyBackend().getListOfCloseVendeurs();
           Navigator.of(context).pushNamed("/vendeursProches",
               arguments: () => setState(() {
                     shaked = false;

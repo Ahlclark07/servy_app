@@ -24,7 +24,7 @@ class PageVendeursProches extends StatelessWidget {
               Navigator.of(context).pop();
             },
             icon: const Icon(Icons.arrow_back)),
-        title: const Text("Creation de service"),
+        title: const Text("Dans un rayon de 20km"),
         scrolledUnderElevation: 0,
       ),
       body: SingleChildScrollView(

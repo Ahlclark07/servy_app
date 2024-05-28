@@ -78,6 +78,7 @@ class PageService extends StatelessWidget {
                             content: Text("Bien ca a marché hein"),
                           ),
                         );
+                        Navigator.pop(context);
                       }
                     },
                     style: Theme.of(context)

@@ -101,7 +101,8 @@ class _PageConnexionState extends State<PageConnexion> {
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Remplisssez tous les champs"),
+                                content: Text(
+                                    "Remplisssez tous les champs correctement"),
                               ),
                             );
                           }
