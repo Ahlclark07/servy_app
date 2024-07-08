@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:servy_app/design/design_data.dart';
 
 class NotFound extends StatelessWidget {
   final String text;
@@ -17,7 +15,7 @@ class NotFound extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.warning),
+              const Icon(Icons.warning),
               Text(text),
             ],
           )

@@ -3,11 +3,9 @@ import 'dart:developer';
 import 'package:async_builder/async_builder.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/utils/auth_service.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
@@ -25,7 +23,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     final String id = widget.room.metadata!["name"] ?? "";
-    final width = MediaQuery.of(context).size.width;
+
     final double height =
         appBarFullSize ? MediaQuery.of(context).size.height - 500 : 180;
     return AsyncBuilder(
