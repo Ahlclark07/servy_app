@@ -63,7 +63,8 @@ class VendeurCard extends StatelessWidget {
                           vendeur: vendeur,
                         ))),
             child: Container(
-              width: width / 2 - 30,
+              width: 300,
+              // width: width  / 2  - 30,
               // padding: const EdgeInsets.symmetric(: 10),
               margin: const EdgeInsets.only(bottom: 30),
               decoration: BoxDecoration(color: Palette.background, boxShadow: [
@@ -83,22 +84,29 @@ class VendeurCard extends StatelessWidget {
                 children: [
                   Container(
                     width: width,
-                    height: width * 9 / 32,
+                    height: width * 14 / 32,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                           image: CachedNetworkImageProvider(
                               "${ServyBackend.basePhotodeProfilURL}/${vendeur["photoDeProfil"]}"),
                           fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(1),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   Text(
                     textAlign: TextAlign.center,
                     "${vendeur["nom_complet"]}, ${vendeur["profession"]}",
+                    maxLines: 2,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
                         ?.copyWith(fontSize: 15),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   Text(
                     "A ${_getDistance()} de vous",

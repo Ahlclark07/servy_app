@@ -73,6 +73,7 @@ class _ServiceCardState extends State<ServiceCard> {
                   ...List<CachedNetworkImage>.generate(
                       images.length,
                       (index) => CachedNetworkImage(
+                          fit: BoxFit.cover,
                           placeholder: (context, url) =>
                               const Center(child: CircularProgressIndicator()),
                           errorWidget: (context, url, error) =>

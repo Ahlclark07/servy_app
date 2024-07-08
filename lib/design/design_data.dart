@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class Palette {
   static Color primary = Colors.black;
   static Color background = Colors.white;
-  static Color blue = const Color(0xFF2196F3);
+  static Color blue = const Color(0xFF6249ce);
   static Color cendre = Colors.grey;
   static Color inputBackground = const Color(0xFFF1F1F1);
 }

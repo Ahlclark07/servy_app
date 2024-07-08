@@ -47,7 +47,7 @@ class ChatInnerPage extends StatelessWidget {
                                       data[index].metadata?["name"] == null ||
                                               data[index].metadata["name"] == ""
                                           ? '#IDdeLaCommandeCree'
-                                          : "#C${data[index].metadata["name"]}",
+                                          : "${data[index].metadata["name"]}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall

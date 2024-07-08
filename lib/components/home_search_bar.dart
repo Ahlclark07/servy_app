@@ -10,8 +10,8 @@ class HomeSearchBar extends StatelessWidget {
     return SearchBar(
         onTap: () => callback(),
         hintText: "Rechercher un service ou un vendeur",
-        elevation: const MaterialStatePropertyAll<double>(1),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        elevation: const WidgetStatePropertyAll<double>(1),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             side: const BorderSide(color: Colors.transparent, width: 0),
             borderRadius: BorderRadius.circular(10.0),

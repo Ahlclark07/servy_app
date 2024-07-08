@@ -13,6 +13,7 @@ class ServyBackend {
   static String baseURL = "https://viensfaireducash.com";
   // static String baseURL = "http://192.168.1.103:300";
   static String basePhotodeProfilURL = "$baseURL/uploads/images/photodeprofils";
+  static String basePhotosCategories = "$baseURL/uploads/images/categories";
   static String basePhotodeServicesPrestataires =
       "$baseURL/uploads/images/servicesprestataires";
   static String basePhotodeMateriau = "$baseURL/uploads/images/materiaux";
@@ -22,7 +23,9 @@ class ServyBackend {
   bool enTransition = false;
   Map<String, dynamic> user = {};
   List<Map<dynamic, dynamic>> serviceList = [];
+  List<Map<dynamic, dynamic>> categoriesList = [];
   List<Map<dynamic, dynamic>> vendeurList = [];
+  Map<String, List<Map<dynamic, dynamic>>> servicesByCat = {};
   Uno uno = Uno(
     baseURL: baseURL,
   );
@@ -217,9 +220,7 @@ class ServyBackend {
     if (user.isNotEmpty) return user;
 
     try {
-      inspect("Requete lancée");
       final response = await uno.get("/users/getUser");
-
       user = response.data["user"];
 
       user["demande"] = response.data["demande"];
@@ -292,6 +293,36 @@ class ServyBackend {
       final response = await uno.get("/users/getservicesofaprestataire/$id");
 
       return List<Map<dynamic, dynamic>>.from(response.data["services"]);
+    } catch (error) {
+      inspect(error);
+      return [];
+    }
+  }
+
+  Future<List<Map<dynamic, dynamic>>> getCategories() async {
+    try {
+      if (categoriesList.isEmpty) {
+        final response = await uno.get("/users/getCategories");
+        inspect(response.data["categories"]);
+        categoriesList =
+            List<Map<dynamic, dynamic>>.from(response.data["categories"]);
+      }
+      return categoriesList;
+    } catch (error) {
+      inspect(error);
+      return [];
+    }
+  }
+
+  Future<List<Map<dynamic, dynamic>>?> getServicesByCategory(String id) async {
+    try {
+      if (servicesByCat.isEmpty || servicesByCat[id]!.isEmpty) {
+        final response = await uno.get("/users/getServicesByCat/$id");
+        inspect(response.data);
+        servicesByCat[id] = List<Map<dynamic, dynamic>>.from(
+            response.data["servicesPrestataires"]);
+      }
+      return servicesByCat[id];
     } catch (error) {
       inspect(error);
       return [];

@@ -20,7 +20,9 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-      color: Palette.background,
+      decoration: BoxDecoration(
+        color: Palette.background,
+      ),
       child: AsyncBuilder(
           future: ServyBackend().getConnectedUser(),
           waiting: (context) =>
@@ -85,5 +87,5 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(showSearch ? 140 : 105);
+  Size get preferredSize => Size.fromHeight(showSearch ? 140 : 95);
 }

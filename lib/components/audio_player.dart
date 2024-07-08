@@ -7,7 +7,8 @@ import 'package:servy_app/utils/servy_backend.dart';
 
 class AudioPlayer extends StatefulWidget {
   final String audio;
-  const AudioPlayer({super.key, required this.audio});
+  final bool mini;
+  const AudioPlayer({super.key, required this.audio, this.mini = false});
 
   @override
   _AudioPlayerState createState() => _AudioPlayerState();
@@ -93,7 +94,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
             stream: player.onProgress,
             builder: (context, value) {
               return SizedBox(
-                width: 250,
+                width: widget.mini ? 200 : 250,
                 child: ProgressBar(
                   progress: value != null
                       ? (finished ? value.duration : value.position)

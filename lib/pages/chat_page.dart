@@ -38,7 +38,7 @@ class _ChatPageState extends State<ChatPage> {
           final statutCommande = commande != null ? commande["statut"] : "";
           return Scaffold(
             appBar: AppBar(
-              title: Text("Commande #${id.substring(1, 10)}"),
+              title: Text(id),
               toolbarHeight: 50,
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(height - 90),

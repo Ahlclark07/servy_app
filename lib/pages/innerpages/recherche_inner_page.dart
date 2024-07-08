@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:servy_app/components/cards/service_card.dart';
 import 'package:servy_app/components/cards/vendeur_card.dart';
+import 'package:servy_app/components/not_found.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
 class InnerPageRecherche extends StatelessWidget {
@@ -46,8 +47,8 @@ class InnerPageRecherche extends StatelessWidget {
                                 enableInfiniteScroll: true,
                                 height: (width * 9 / 32) + 100,
                               ))
-                          : const Text(
-                              "Pas de vendeurs pour le moment sorry bro"),
+                          : const NotFound(
+                              text: "Pas de vendeurs pour le moment sorry bro"),
                       Text(
                         "Liste des services",
                         style: Theme.of(context)
@@ -59,7 +60,8 @@ class InnerPageRecherche extends StatelessWidget {
                         height: 20,
                       ),
                       datas["services"]!.isEmpty
-                          ? const Text("Pas de services pour le moment")
+                          ? const NotFound(
+                              text: "Pas de services pour le moment")
                           : FlutterCarousel(
                               items: [
                                   ...List<ServiceCard>.generate(

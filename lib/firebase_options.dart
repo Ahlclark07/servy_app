@@ -59,4 +59,5 @@ class DefaultFirebaseOptions {
     projectId: 'servy-39f61',
     storageBucket: 'servy-39f61.appspot.com',
   );
+
 }
