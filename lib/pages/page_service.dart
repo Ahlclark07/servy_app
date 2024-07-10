@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:latlong2/latlong.dart';
 import 'package:servy_app/components/audio_player.dart';
 import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/pages/page_profil.dart';
@@ -72,6 +75,7 @@ class PageService extends StatelessWidget {
                             metadata: {
                               "name":
                                   "${vendeur["nom"]} | ${vendeur["profession"]}",
+                              "id": response[1],
                               "imageUrl": vendeur["photoDeProfil"]
                             });
 
@@ -81,8 +85,11 @@ class PageService extends StatelessWidget {
                                 Text("Votre commande a été crée avec succès"),
                           ),
                         );
+
                         Navigator.popUntil(
                             context, ModalRoute.withName("/main"));
+                      } else {
+                        inspect(response);
                       }
                     },
                     style: Theme.of(context)
@@ -178,13 +185,6 @@ class PageService extends StatelessWidget {
               ),
             ]),
           ),
-          // Container(
-          //   color: Palette.inputBackground,
-          //   padding: const EdgeInsets.only(top: 30, bottom: 20),
-          //   child: AudioPlayer(
-          //     audio: service["vocal"] ?? "",
-          //   ),
-          // ),
           Container(
             color: Palette.background,
             padding: const EdgeInsets.all(10),
@@ -244,7 +244,6 @@ class PageService extends StatelessWidget {
               ],
             ),
           ),
-
           service["materiaux"]!.length > 0
               ? Container(
                   color: Palette.background,
@@ -301,7 +300,6 @@ class PageService extends StatelessWidget {
                   ),
                 )
               : Container(),
-
           service["verifie"] == "refusé"
               ? SizedBox(
                   width: width - 40,
@@ -349,6 +347,26 @@ class PageService extends StatelessWidget {
                     ?.copyWith(fontWeight: FontWeight.bold, fontSize: 20),
               )
             ],
+          ),
+          SizedBox(
+            width: width,
+            height: 400,
+            child: GoogleMap(
+                mapType: MapType.normal,
+                markers: {
+                  Marker(
+                      markerId: MarkerId(vendeur["nom"]),
+                      position: _parseCoordinates(
+                          vendeur["adresses"][0]["localisationMap"])),
+                  Marker(
+                      markerId: MarkerId(ServyBackend().user["nom"]),
+                      position: _parseCoordinates(ServyBackend()
+                          .user["adresses"][0]["localisationMap"])),
+                },
+                initialCameraPosition: CameraPosition(
+                    zoom: 14,
+                    target: _parseCoordinates(
+                        vendeur["adresses"][0]["localisationMap"]))),
           ),
           const SizedBox(
             height: 100,

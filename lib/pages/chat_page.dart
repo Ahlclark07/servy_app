@@ -1,11 +1,14 @@
 import 'dart:developer';
 
 import 'package:async_builder/async_builder.dart';
+import 'package:bubble/bubble.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:servy_app/components/custom_bubble.dart';
+import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/utils/auth_service.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
@@ -20,9 +23,29 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   bool appBarFullSize = false;
+  Widget _bubbleBuilder(
+    Widget child, {
+    required message,
+    required nextMessageInGroup,
+  }) {
+    Color color = AuthService().currentUser!.uid != message.author.id ||
+            message.type == types.MessageType.image
+        ? const Color(0xfff5f5f7)
+        : Palette.blue;
+    BubbleNip bubbleNip = AuthService().currentUser!.uid != message.author.id
+        ? BubbleNip.leftBottom
+        : BubbleNip.rightBottom;
+    return CustomBubble(
+      color: color,
+      message: message.text,
+      nip: bubbleNip,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String id = widget.room.metadata!["name"] ?? "";
+    final String id = widget.room.metadata!["id"] ?? "";
+    final String name = widget.room.metadata!["name"] ?? "";
 
     final double height =
         appBarFullSize ? MediaQuery.of(context).size.height - 500 : 180;
@@ -36,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
           final statutCommande = commande != null ? commande["statut"] : "";
           return Scaffold(
             appBar: AppBar(
-              title: Text(id),
+              title: Text(name),
               toolbarHeight: 50,
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(height - 90),
@@ -48,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
                         child: AnimatedContainer(
                           height: height - 90,
                           duration: const Duration(milliseconds: 300),
-                          color: Colors.yellow,
+                          color: Colors.grey.shade100,
                           padding: const EdgeInsets.all(12),
                           child: Column(
                             mainAxisAlignment: appBarFullSize
@@ -97,7 +120,15 @@ class _ChatPageState extends State<ChatPage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         ElevatedButton(
-                                            onPressed: null,
+                                            onPressed: () {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      "En cours d'implémentation ! payer par fedapay"),
+                                                ),
+                                              );
+                                            },
                                             child: Text(statutCommande ==
                                                     "non_payer"
                                                 ? "Payer les ${commande["service"]["tarif"]} FCFA"
@@ -144,6 +175,7 @@ class _ChatPageState extends State<ChatPage> {
                     initialData: const [],
                     builder: (context, snapshot) {
                       return Chat(
+                        bubbleBuilder: _bubbleBuilder,
                         emptyState: const Center(
                           child: Text("Pas de message, envoyez un message !"),
                         ),

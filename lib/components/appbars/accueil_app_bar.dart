@@ -87,5 +87,5 @@ class AccueilAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(showSearch ? 140 : 95);
+  Size get preferredSize => Size.fromHeight(showSearch ? 140 : 90);
 }

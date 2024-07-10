@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:servy_app/components/buttons/refresh_button.dart';
 import 'package:servy_app/components/cards/service_card.dart';
+import 'package:servy_app/components/not_found.dart';
 import 'package:servy_app/design/design_data.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 
@@ -164,7 +165,8 @@ class _ProfilInnerPageState extends State<ProfilInnerPage> {
                     builder: (context, list) {
                       if (list!.isEmpty) {
                         return const Center(
-                            child: Text("Aucun service pour le moment"));
+                            child:
+                                NotFound(text: "Aucun service pour le moment"));
                       }
                       return Column(
                         children: [
@@ -191,7 +193,8 @@ class _ProfilInnerPageState extends State<ProfilInnerPage> {
                     builder: (context, list) {
                       if (list!.isEmpty) {
                         return const Center(
-                            child: Text("Aucune commande pour le moment"));
+                            child: NotFound(
+                                text: "Aucune commande pour le moment"));
                       }
                       return Column(
                         children: [

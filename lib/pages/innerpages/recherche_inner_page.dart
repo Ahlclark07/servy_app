@@ -41,11 +41,10 @@ class InnerPageRecherche extends StatelessWidget {
                                   (index) => VendeurCard(
                                       vendeur: datas["vendeurs"]![index])),
                               options: CarouselOptions(
-                                initialPage: 3,
-                                viewportFraction: 1 / 2,
+                                viewportFraction: .75,
                                 showIndicator: false,
                                 enableInfiniteScroll: true,
-                                height: (width * 9 / 32) + 100,
+                                height: (width * 15 / 32) + 100,
                               ))
                           : const NotFound(
                               text: "Pas de vendeurs pour le moment sorry bro"),

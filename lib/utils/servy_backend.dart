@@ -1,7 +1,7 @@
 import 'dart:async';
+
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:geolocator/geolocator.dart';
@@ -170,6 +170,22 @@ class ServyBackend {
     }
   }
 
+  Future<dynamic> traduction({
+    required String data,
+  }) async {
+    try {
+      final Uno unoTranslate = Uno(
+          baseURL: "https://translator-api.glosbe.com",
+          headers: {'Content-Type': 'text/plain'});
+      final response = await unoTranslate.post(
+          "/translateByLangDetect?sourceLang=fr&targetLang=fon",
+          data: data);
+      return response.data;
+    } on UnoError catch (error) {
+      return ["${ServyBackend.echec} : ${error.message}", ""];
+    }
+  }
+
   Future<List<String>> passerCommande({
     required String serviceprestataire,
   }) async {
@@ -316,7 +332,7 @@ class ServyBackend {
 
   Future<List<Map<dynamic, dynamic>>?> getServicesByCategory(String id) async {
     try {
-      if (servicesByCat.isEmpty || servicesByCat[id]!.isEmpty) {
+      if (servicesByCat.isEmpty || servicesByCat[id] == null) {
         final response = await uno.get("/users/getServicesByCat/$id");
         inspect(response.data);
         servicesByCat[id] = List<Map<dynamic, dynamic>>.from(

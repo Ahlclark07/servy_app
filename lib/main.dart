@@ -22,6 +22,7 @@ Future<void> main() async {
   await Firebase.initializeApp();
   ServyBackend.initialize();
   HttpOverrides.global = MyHttpOverrides();
+
   runApp(const MyApp());
 }
 

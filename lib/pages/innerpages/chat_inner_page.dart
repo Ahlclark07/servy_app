@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:servy_app/components/not_found.dart';
 import 'package:servy_app/pages/chat_page.dart';
 import 'package:servy_app/utils/servy_backend.dart';
 import 'package:servy_app/design/design_data.dart';
@@ -18,7 +19,8 @@ class ChatInnerPage extends StatelessWidget {
       waiting: (context) => const Center(child: CircularProgressIndicator()),
       builder: (context, data) {
         if (data == null || data.isEmpty) {
-          return const Center(child: Text('Pas de conversations'));
+          return const Center(
+              child: NotFound(text: 'Pas de conversations pour le moment.'));
         }
         return Column(
           children: [
@@ -46,7 +48,7 @@ class ChatInnerPage extends StatelessWidget {
                                     child: Text(
                                       data[index].metadata?["name"] == null ||
                                               data[index].metadata["name"] == ""
-                                          ? '#IDdeLaCommandeCree'
+                                          ? 'Commande'
                                           : "${data[index].metadata["name"]}",
                                       style: Theme.of(context)
                                           .textTheme

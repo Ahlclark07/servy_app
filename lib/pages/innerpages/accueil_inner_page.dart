@@ -189,7 +189,8 @@ class _AccueilInnerPageState extends State<AccueilInnerPage> {
                           enableInfiniteScroll: true,
                           height: (width * 15 / 32) + 100,
                         ))
-                    : const Text("Pas de vendeurs pour le moment sorry bro");
+                    : const NotFound(
+                        text: "Pas de vendeurs pour le moment sorry bro");
               }),
           const SizedBox(
             height: 20,
